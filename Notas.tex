@@ -1,0 +1,513 @@
+\documentclass{homework}
+
+% S\'imbolos
+\usepackage{recycle}
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{dsfont}
+
+\usepackage[utf8]{inputenc}
+
+
+% Figuras
+\usepackage{graphicx}
+\usepackage{float}
+
+% Gr\'aficas
+\usepackage{tikz}
+
+% Estilo Tikz
+\tikzstyle{edge}=[shorten <=2pt, shorten >=2pt,
+                  >=stealth, line width=1.1pt]
+\tikzstyle{vertex}=[circle, fill=white, draw,
+                    minimum size=5pt,
+                    inner sep=0pt, outer sep=0pt]
+\tikzstyle{blackV}=[circle, fill=black, draw,
+                    minimum size=5pt,
+                    inner sep=0pt, outer sep=0pt]
+
+
+%Quitamos la sangría
+\setlength\parindent{0pt}
+
+
+\begin{document}
+\section*{\LARGE{Notas del Curso de Complejidad 2021-1}}
+
+\section{M\'aquinas de Turing}
+
+\subsection{Introducci\'on}
+En 1906 se declara el Problema 10 de Hilbert:
+¿Existe un algoritmo que decida si una ecuación diofantina dada (con cualquier mínimo de variables) tiene solución (entera)?
+
+En 1928 se genera el problema de Hilbert-Ackermann :
+¿Hay un algoritmo que dado un enunciado, un conjunto de axiomas y un conjunto de reglas de inferencias, decida si el enunciado se puede deducir a partir de los axiomas mediante las reglas de inferencia?
+
+Leibniz propuso el tener "un tipo de álgebra en el que todas las verdades de la razón pudieran reducirse a algún tipo de cálculo"\\
+
+Un problema de decisión P lo podemos pensar como $f : A \rightarrow \{0,1\}$ donde $A$ es el conjunto de instancias (o entradas) de P.
+$f^{y}[0]$ conjunto de no-instancias
+$f^{y}[1]$ conjunto de sí.instancias
+
+\subsection{M\'aquina de Turing}
+$\bf{Def}$ Una Máquina de Turing es una noneta ordenada $M = (Q, \Sigma, \Gamma,\sqcup, \vdash, \delta, q_0, q_a, q_r )$
+\begin{itemize}
+	\item $Q$ es un conjunto no vacío (de entrada)
+	\item $\Sigma$ es un conjunto no vacío (alfabeto de entrada)
+	\item $\Gamma$ es un conjunto no vacío (alfabeto de cinta)
+	\item $\delta : Q' \times \Gamma \rightarrow Q \time \Gamma \times \{L,R\}$ donde $Q' = Q - \{q_0, q_r\}$
+	\item $q_0 \in Q$ (estado inicial)
+	\item $q_a \in Q$ (estado aceptación) Estado de paro
+	\item $q_r \in Q$ (estado rechazo) Estado de paro
+	\item $\sqcup \in \Gamma - \Sigma$ (símbolo en blanco)
+	\item $\vdash \in \Gamma - \Sigma$ (marcador o delimitador izquierdo de inicio de cinta)
+\end{itemize}
+
+Para cualquier $q \in Q$ existe $p \in Q$ tal que $\delta(q, \vdash) = (p, \vdash, R)$\\
+
+Una configuración de la máquina de Turing se determina por:
+\begin{itemize}
+	\item Estado $q$
+	\item Posición de la cabeza
+	\item Contenido de la cinta $uv$
+\end{itemize}
+La configuración se ve como $uqv$, $q$ es el cabezal que se encuentra en la primera posición de $v$.
+
+Ejemplo: Si $M$ tiene entrada $w$ su posición inicial es $q_0 \vdash w$
+
+La configuración $\alpha$ da lugar a la configuración $\beta$ $\alpha \rightarrow \beta$ y se define como sigue:
+\begin{itemize}
+	\item $\alpha \rightarrow^{0} \alpha$
+	\item Diremos que $\alpha \rightarrow^{n+1} \beta$ si existe una configuración $\Gamma$ tal que $\alpha \rightarrow^{n} \Gamma$ y $\Gamma \rightarrow \beta$
+	\item $\alpha \rightarrow^{*} \beta$ si $\alpha \rightarrow^{n} \beta$ para algún $n \in \mathds{N}$
+\end{itemize}
+
+Una configuración e aceptación (o rechazo) es cualquiera en la que el estado sea $q_a$ (ó $q_r$). Éstas configuraciones son de paro.\\
+
+Si T es una MT y $w \in \Sigma^{*}$ se dice que T acepta $w$ si $q_0 \rightarrow^{n} xq_ay$ para cadenas $x, y \in \Sigma^{*}$.
+
+El lenguaje de T, L(T) es el conjunto L(T) = $\{x \in \Sigma^{*} | T \text{ acepta a } x\}$.
+
+Si L $\subseteq \Sigma^{*}$ es un lenguaje, se dice que T acepta a L si L(T) = L.
+
+Los lenguajes regulares pueden ser reconocidos por un autómata finito determinista 
+
+$\bf{Algoritmo}$ Algoritmo para convertir de DFA (autómata finito determinista) a TM (máquina de Turing)
+\begin{enumerate}
+	\item Copiar cada estado
+	\item Cambiar cada transición con etiqueta $'x'$ por una con etiqueta $'x/x,R'$
+	\item Agregar un estado de aceptación
+	\item Para cada estado final en el autómata, agregarle una transición $\sqcup / \sqcup, R$
+\end{enumerate}
+
+¿Cómo describimos las máquinas de Turing? Con pseudocódigo
+Ejemplo:
+Describimos la máquina de Turing que obtiene las potencias de dos como sigue:
+M = "Con entrada $\vdash w$:
+\begin{enumerate}
+	\item Recorre la cinta de izquierda a derecha, tachando un cero no y uno si
+	\item Si en 1 la cinta contenía un único cero, $\underline{acepta}$
+	\item Si en 1 la cinta contenía más de un creo, y un número impar de ceros, entonces $\underline{rechaza}$
+	\item Regresa el cabezal a extremo izquierdo de la cinta
+	\item Va a 1"
+\end{enumerate}
+
+Las máquinas de Turing pueden computar funciones parciales.
+
+Tenemos $f : D \rightarrow C$  $D \subseteq \Sigma^{*}$ $C \subseteq \Gamma^{*}$.
+
+$\bf{Def.}$ Sea R una MT, $k$ un natural y $f$ una función parcial sobre $(\Sigma^{*})^{k}$ con valor en $\Gamma^{*}$. Decimos que T computa a $f$ si para cada $(x_1, ..., x_k)$ en el dominio de $f$, 
+$q_0 \vdash x_1 \sqcup x_2 \sqcup ... \sqcup x_k \rightarrow^{k} q_0 \vdash f(x_1, ..., x_k)$
+y ninguna otra entrada que sea una $k$-ada de cadenas es aceptada por T. 
+
+Una función parcial $f: (\Sigma^{*})^{k} \rightarrow \Gamma^{*}$ es Turing-computable (computable) si hay una máquina de Turing que la computa.
+
+Al fijar el contradominio y la aridad de la función, entonces una MT calcula una única función parcial.\\
+
+Una tercera opción del cabezal de la MT es quedarse en su lugar después de hacer algo (S). 
+$\delta : Q \times \Gamma \rightarrow Q \times \Gamma \times \{L,R,S\}$.
+
+$M_1$ tiene "la opción" $S$
+$M_2$ no tiene "la opción" $S$ pero reconoce el mismo lenguaje que $M_1$ o computa la misma función.
+
+Simulo una máquina de Turing que tiene la opción S con una máquina de Turing que no la tiene al poner un estado adicional, donde en las transiciones se escribe lo mismo que lea y se mueva a la derecha, luego se escriba lo mismo que lea y se mueva a la izquierda.\\
+
+Algunas MT útiles que regresan el cabezal a donde estaba originalmente:
+\begin{itemize}
+	\item NB (Next Blank)
+	\item PB (Previous Blank)
+	\item Copy ($\vdash x \rightarrow x \sqcup x$)
+	\item Insert($\sigma$)
+	\item "Borrar la cinta" (Ponemos un delimitador derecho y borramos todo a su izquierda)
+	\item Compare ($\vdash x \sqcup y$ acepta si $x=y$ o rechaza si $x \neq y$)
+	\item R (Reverse)
+\end{itemize}
+Copy $\rightarrow$ NB $\rightarrow$ R $\rightarrow$ PB $\rightarrow$ Equal (Esta máquina de Turing reconoce palíndromos)
+
+
+\subsection{M\'aquinas de Turing multicintas}
+Una MT multicinta es como una MT pero tiene $k$ cintas de memoria. Su definición solo difiere respecto a una MT usual en la función de transición
+$\delta : Q \times \Gamma^{k} \rightarrow Q \times \Gamma^{k} \times \{L, R, S\}^{k}$.
+$\delta(q_1, a_1,...,a_k) = (q_1,b_1,...,b_k, D_1,...,D_k)$ $D_i \in \{L,R,S\}$.
+
+Las máquinas de Turing multicinta no tienen más poder que las de una cinta.
+Para simularlas en una máquina de Turing de una cinta podemos usar bloques como letras de alfabeto y manejamos la posición del cabezal como un puntito en las distintas letras. Le hace una pasada para ver los cabezales y luego realiza otra para hacer las transiciones. La memoria está en la estructura de los estados (el control finito).
+Otra manera es que los espacios pares simulen una cinta y los impares otra (es trivial generalizarlo a $k$). Pero usaremos la siguiente:
+
+$\bf{Teorema}$ Toda MT multicinta tiene una MT de una sola cinta equivalente.
+
+Dem: Construimos, dada una MT multicinta M a la MT de una sola cinta S t.q. tiene los contenidos de las cintas de M en su cinta, separados por un símbolo especial $\#$, y usando versiones especiales de cada símbolo en $\Gamma_M$ para denotar donde están los cabezales $\dot{o}$
+
+S = Con entrada $w_1,...,w_n$
+\begin{enumerate}
+	\item Poner su cinta en el formato que representa las k cintas. La cinta formateada se ve como $| \vdash | w_1 | ... | w_n | \# | \sqcup | \# | \sqcup | ...|$.
+	\item Para simular un movimiento, S recorre la cinta desde $\vdash$  donde hasta el último $\#$, para determinar los símbolos que están leyendo los k cabezales. Después S hace una segunda pasada para actualizar las cintas de acuerdo a la función de transición de M.
+	\item Si en cualquier punto, S mueve alguna de las cabezas virtuales hacia la almohadilla ($\#$) de la derecha, en M entonces el cabezal correspondiente se movió a un espacio en blanco. Luego, basta con que se inserte un símbolo blanco en esa posición.
+\end{enumerate}
+
+
+$\bf{Corolario}$ Si L es un lenguaje, entonces L es Turing-reconocible si y sólo si L es reconocido por alguna MT multicinta.
+
+Dem: Toda MT es una MT multicinta.
+
+La otra implicación es el teorema anterior $\blacksquare$
+
+\subsection{M\'aquinas de Turing no deterministas}
+
+Se diferencian de las deterministas está en que tenemos una nueva función de transición:
+
+$\delta : Q \times \Gamma \rightarrow \mathcal{P}(Q \times \Gamma \times \{L, R, S\})$
+
+Ya no es un algoritmo, sino que ahora la máquina “adivina” qué transición tomar para llegar al resultado.
+Se dice que acepta si al menos un camino lleva a aceptación.
+Se parecen a los autómatas no-deterministas.
+No son implementables en la vida real.
+Son equivalentes a una MT (usando una MT que haga BFS exhaustivo sobre el árbol de posibles configuraciones)
+Es importante pensar en términos de que la máquina “adivina” la respuesta correcta (SOLO si existe).
+Toda MT es MTN.
+
+Ejemplo: Un número en unario ¿Es compuesto?
+Aplica la siguiente combinación de MTs NB $\rightarrow$ G (Guess) $\rightarrow$ NB $\rightarrow$ G $\rightarrow$ PB $\rightarrow$ M (Multiply) $\rightarrow$ PB $\rightarrow$ Equal
+
+¿Para qué sirven las MTN?
+Estas máquinas teóricas realizan búsquedas exhaustivas “rápidamente”
+Resuelven problemas lentos muy rápido.
+“Si tuviéramos una MTN, podríamos resolver un montón de problemas que nos causan dolores de cabeza en la vida real”
+Como por ejemplo factorización de números y polinomios, agente viajero, SAT, etc.\\
+
+
+$\bf{Teorema}$ Toda MTN tiene una MTD equivalente.
+
+Dem: Sea N una MTN, proponemos a M una MTD de 3 cintas.
+\begin{itemize}
+	\item En la primera cinta está la entrada y nunca se modifica.
+	\item La segunda cinta es una copia de la cinta de N y se usa para simular a N
+	\item La tercera cinta contiene las direcciones de los nodos del árbol de ejecución de N codificadas con $\Sigma = \{1, ..., b\}$ Existen direcciones inválidas.
+\end{itemize}
+
+M = "con entrada $w$
+\begin{enumerate}
+	\item Copia la cinta 1 a la 2
+	\item Usa a la cinta 2 para simular a N con entrada $w$ en una rama de su cómputo no determinista.
+	Antes de cada transición, consulta la cinta 3 para determinar que decisión tomar entre las distintas posibilidades no deterministas. Si no hay más símbolos en la cinta 3 o se llega a una dirección inválida, aborta y va a 3. Si encuentra una configuración de rechazo va a 3. Si encuentra una configuración de aceptación, $\underline{acepta}$
+	\item Reemplaza la cadena en la cinta 3 por la siguiente en el orden canónico de $\{1,..,b\}^{*}$
+	\item Va a 1"
+\end{enumerate}
+
+Si una MTN M se ejecuta hay 3 posibilidades:
+\begin{enumerate}
+	\item acepta Configuración de paro
+	\item rechaza Configuración de paro
+	\item se cicla
+\end{enumerate}
+
+$\bf{Corolario}$ Un lenguaje es reconocible si y sólo si alguna MTN lo reconoce.
+
+Una MT que no se cicla es un decididor.
+
+Un lenguaje L es Turing-decidible si existe un decididor que lo reconoce.
+
+$\bf{Corolario}$ Un lenguaje es decidible si  sólo si alguna MTN lo decide.
+
+Dem. La ida es trivial.
+Para el regreso notemos que cada longitud de cadena es un nivel del árbol, así que mantenemos un booleano que es v si todas las ejecuciones han terminado (en la longitud actual) f e.o.c.
+Cuando acaben las cadenas de longitud k, rechazamos si el booleano es v. En otro caso, vamos a la longitud k+1.
+
+\subsection{Enumeradores}
+
+Sea E una MT con $k$ cintas $k \in \mathds{Z}$ y sea $L \subseteq \Sigma^{*}$. Decimos que E $\underline{enumera}$ a L si:
+\begin{enumerate}
+	\item El cabezal de la primera cinta nunca se mueve a la izquierda, nunca escribe un espacio en blanco y nunca modifica un símbolo que ya escribió.
+	\item Para cualquier $x \in L$ hay algún punto de la operación de E en la que la cinta 1 contiene $x_1 \# x_2 \# ... \# x_n \# x$ donde $x_i \in L$ p.c $1 \leq i \leq n$ y $x_1,...,x_n,x$ son todas distintas.
+	Si L es finito no se imprimen símbolos después de la última $\#$.
+\end{enumerate}
+
+El lenguaje de E, es L, i.e. L(E) = L.\\
+
+$\bf{Teorema}$: Sea $L \subseteq \Sigma^{*}$ un lenguaje. Entonces L es reconocible si y sólo si es enumerado por algún enumerador; además $L$ es decidible si y sólo si es enumerado en orden canónico por algún enumerador.
+
+Demostración: Supongamos primero que L es decidible y sea M una MT que lo decide. Proponemos a E dado por 
+
+E ="Ignora la entrada
+\begin{enumerate}
+	\item Genera la siguiente cadena $w$ en orden canónico de $\Sigma^{*}$
+	\item Ejecuta M con entrada $w$ e imprime a $w$ si M acepta".
+\end{enumerate}
+
+Como M es un decididor para L, E va a recorrer todas las cadenas en $\Sigma^{*}$ y, en orden canónico, va a imprimir solamente las que están en L.
+
+Supongamos que L es reconocido por M. Proponemos al enumerador E dado por:
+E ="Ignora la entrada
+\begin{enumerate}
+	\item Para cada $i \in \mathds{N}$
+	\item Genera la siguiente cadena si en orden canónico y le agrega a la lista $s_0, s_1,...,s_i$
+	\item Ejecuta M por $i$ pasos con cada una de las entradas $s_0$ hasta $s_i$
+	\item Si M acepta alguna de las entradas y no la había aceptado en una ejecución anterior, la imprime."
+\end{enumerate}
+
+Si tenemos $s_i$ y $s_k$ tal que $i < k$, 
+
+Supongamos que E enumera a L. Proponemos a M para recorrer a L dado por:
+M="Con entrada $w$:
+\begin{enumerate}
+	\item Ejecuta E. Cada vez que se imprima una cadena, la compara con $w$.
+	\item Si $w$ se imprime en algún momento $\underline{acepta}$."
+\end{enumerate}
+
+Supongamos que E enumera a L en orden canónico, Proponemos a M dado por
+M="Con entrada $w$:
+\begin{enumerate}
+	\item Ejecuta E. Cada vez que se imprima una cadena, la compara con $w$.
+	\item Si $w$ se imprime en algún momento $\underline{acepta}$.
+	\item Si la cadena impresa por $E$ supera a $w$ en orden canónico, $\underline{rechaza}$."$\blacksquare$
+\end{enumerate}
+
+
+\subsection{T\'esis Church-Turing}
+Turing, Church, Goëdel et al formalizaron el concepto de algoritmo.
+
+Los algoritmos desde el punto de vista intuitivo son equivalentes a las Máquinas de Turing.
+
+Ejemplo:
+I : G es gráfica
+
+Q: ¿Es G conexa?
+
+M= "Con entrada $<G>$ con $G$ una gráfica:
+\begin{enumerate}
+	\item Elige el primer vértice de $G$ y lo marca.
+	\item Repite el siguiente paso hasta que no se marquen vértices nuevos.
+	\item Para cada vértice en $G$, éste es marcado si es adyacente a algún vértice marcado.
+	\item Revisa si todos los vértices están marcados. En tal caso $\underline{acepta}$, si no $\underline{rechaza}$".
+\end{enumerate}
+
+M decide A 
+
+\subsection{Máquina Universal de Turing }
+
+U: "Con entrada $<M,w>$ con $M$ una $MT$
+ \begin{enumerate}
+ 	\item Simula a M con entrada a $w$
+ 	\item $\underline{Acepta}$ si M acepta, $\underline{rechaza}$ si M rechaza.
+ \end{enumerate}
+
+\section{Problema de aceptaci\'on}
+
+$A_{AFD} = \{<A,w> | \text{El AFD A acepta a la cadena w}\}$
+
+Problema $A_{AFD}$
+
+I: Un AFD A y una cadena $w$
+
+Q: ¿A acepta a $w$?\\
+
+$\bf{Prop}$: $A_{AFD}$ es decidible.
+
+Dem: Proponemos una MT $M$ que decida a $A_{AFD}$
+
+$M$ = Con entrada $<A,w>$ con a un AFD y w una cadena:
+\begin{enumerate}
+	\item Simula A con entrada w.
+	\item Si la simulación termina en un estado de aceptación, $\underline{acepta}$. Si no, $\underline{rechaza} \blacksquare$
+\end{enumerate}
+
+$\bf{Prop}$: $A_{AFN}$ es decidible
+
+Dem: Proponemos una MTD N que decida a $A_{AFN}$
+
+$N$ = "Con entrada $<B, w>$ con B un AFN y w una cadena:
+\begin{enumerate}
+	\item Construye una AFD A equivalente a B.
+	\item Ejecuta M con entrada w.
+	\item $\underline{Acepta}$ si M acepta y $\underline{rechaza}$ si M rechaza ".
+\end{enumerate}
+
+$A_{REX} = \{<R,w> | \text{R es una expresion regular que genera a w} \}$
+
+$\bf{Prop}$: $A_{REX}$ es decidible
+
+Dem: P = "Con entrada $<R, w >$ donde R es una regex y w una cadena:
+\begin{enumerate}
+	\item Construye un AFN A equivalente a R.
+	\item Ejecuta N con entrada $<A,w>$
+	\item Responde lo mismo que N".
+\end{enumerate}
+
+
+$E_{AFD}  = \{<A> | \text{A es un AFD con L(A)}=\emptyset\}$ 
+
+$\bf{Prop}$: $E_{AFD}$ es decidible
+
+Dem: T = "Con entrada $<A>$ donde A es un AFD:
+\begin{enumerate}
+	\item Marca el estado inicial de A.
+	\item Repite hasta que no se marquen estados nuevos
+	\item Marca todos los estados que tengan transición desde un estado marcado.
+	\item  Si algún estado de aceptación está marcado, $\underline{rechaza}$. Si no, $\underline{acepta}$.
+\end{enumerate}
+
+$EQ_{AFD}  = \{<A,B> | \text{A y B son AFD tales que L(A)=L(B)}\}$ 
+
+$\bf{Prop}$: $C, L(C) = L(A)\triangle L(B)$
+
+Dem: F = "Con entrada $<A.B>$ donde A y B es un AFD:
+\begin{enumerate}
+	\item Construye a C tal que $L(C)=L(A)\triangle L(B)$
+	\item Ejecuta a $T$ con entrada C
+	\item  Si T acepta, $\underline{acepta}$. Si no, $\underline{rechaza} \blacksquare$.
+\end{enumerate}
+
+
+Función característica:
+El conjunto $S \subseteq A$ $\chi_{S} : A \rightarrow \{0, 1\}$
+$\chi_{S}(a) =$ 1 si $a \in S$ 0 si $a \notin S$
+
+$\omega = \{0,1,2,3,...\} = \mathds{N}$
+$(0,1,0,1,..)$ sería el conjunto de los impares.
+
+$\mathcal{P}(\mathds{N}) \sim^{\mathds{N}} 2 = \{f: \mathds{N} \rightarrow \{0,1\}$
+
+$\varphi : P(\mathds{N}) \rightarrow^{\mathds{N}} 2$
+$A \mapsto \chi_{A}$
+$\psi : 2 \rightarrow P(\mathds{N})$
+$f \mapsto \{i \in \mathds{N} | f(i) = 1\}$
+
+$\psi \cdot \varphi = 1_{P(\mathds{N})}$
+$\varphi \cdot \psi = 1_{P(\mathds{N})}$
+
+¿La potencia de los naturales es biyectable con las sucesiones binarias? $\mathds{N} \sim \mathcal{P}(\mathds{N})$
+¿Los naturales y la potencia de los naturales no son biyectables?
+$\mathds{N} \sim \mathds{N}_2$
+
+Si fueran biyectables podrías tener:
+$f: \mathds{N} \rightarrow^{\mathds{N}} 2$
+Si f fuera suprayectiva entonces toda sucesión binaria aparecería en la lista (sería imagen de alguien).
+
+$g: \mathds{N} \rightarrow 2$
+$g(i) = 1 - f_{i}(i)$
+$g = (1,0,1,1,...)$
+
+Podemos llegar a contradicción porque:
+$\exists n \in \mathds{N}$
+$f_{n}(n) \not= g(n) = 1 - f_{n}(n) $!
+Por lo tanto,
+$\mathds{N} \nsim \mathcal{P}(\mathds{N})$
+$\mathds{N} \nsim \mathds{N}_2$
+
+"Nadie podrá expulsarnos de paraíso que Cantor ha creado"-Hilbert.\\
+
+$\bf{Prop.}$ Existen lenguajes no reconocibles.
+
+Dem: 
+Si $\Sigma$ es contable, entonces $\Sigma^{*}$ es numerable.
+Sea $\mathcal{M} = \{<M> | M es una MT\} \subset Sigma^{*}$
+$|\mathcal{M} \leq \aleph_{0}$
+
+Si $\mathcal{L}L$ es el conjunto de todos los lenguajes sobre el alfabeto $\Sigma$, afirmamos que $|\mathcal{L}| = |\mathds{N}_2|$
+
+Por tanto, $|\mathcal{M}|< |\mathcal{L}|$
+Es decir hay más lenguajes que MT. Así, debe haber lenguajes no reconocibles por MT alguna.
+
+$\varphi : \mathcal{L} \rightarrow \mathds{N}_2$
+Sea $S_0, S_1, S_2, ...$ el orden canónico de $Sigma^{*}$, y sea $\mathcal{L}$ un lenguaje sobre $Sigma^{*}$ $\blacksquare$\\
+
+¿En general $S \sim P(S)$? $\underline{No}$
+
+Sea $f: S \rightarrow P(S)$. Veamos que f no es suprayectiva. Proponemos $T = \{s \in S | s \notin f(s)\}$
+Si $s \in T$ entonces $s \notin f(s)$ ($T \cup (S-T) = S$)
+Si $s \notin T$ entonces $s \in f(s)$
+Por tanto $T \neq f(s)$
+$T \notin Im(f)\blacksquare$\\
+
+
+$A,E,EQ$
+$A_{TM} = \{<M \omega> | \text{M es una MT que acepta a la cadena} \omega\}$
+
+$\bf{Obs}$. $A_{TM}$ es reconocible.
+	U = Con entrada $<M, w>$ donde M es una MT
+\begin{enumerate}
+	\item Simula a M con entrada $w$
+	\item Si M acepta, $\underline{acepta}$, si M rechaza, $\underline{rechaza}$
+\end{enumerate}
+
+$\bf{Prop}$. $A_{TM}$ no es decidible
+Dem. Supongamos que sí, y sea R un decididor de $A_{TM}$
+$R(<M,w>) = \{ \underline{acepta} \text{si M acepta a w}, \underline{rechaza} \text{si M rechaza a w}\}$
+Construimos una MT D que usa a R como subrutina
+D = "Con entrada $<M>$ dada $M$ es una $MT$:
+\begin{enumerate}
+	\item Ejecuta R con entrada $<M, <M>>$
+	\item Si R acepta, $\underline{rechaza}$; si R rechaza, $\underline{acepta}$"
+\end{enumerate}
+$D(<M>) = \{ \underline{acepta} \text{si M no acepta a }<M>; \underline{rechaza} \text{si M acepta a }<M>\}$
+
+$D(<D>) = \{ \underline{acepta} \text{si D rechaza a }<D>; \underline{rechaza} \text{si D acepta a }<D>\}$!
+D $\underline{acepta}$ a D si y sólo si D $\underline{rechaza}$ a D! $\blacksquare$\\
+
+$\bf{Def.}$: Un lenguaje L sobre $\Sigma$ es $\underline{co-reconocible}$ si $\Sigma(\Sigma^{*} - L)$ es reconocible.
+
+$\bf{Prop.}$ Un lenguaje es decidible si y sólo si es reconocible y co-reconocible.
+
+Dem: Sea A un lenguaje. Si A es decidible, entonces es reconocible. Sea M un decididor para A.
+M = "Con entrada $w$:
+\begin{enumerate}
+	\item Ejecuta M con entrada $w$
+	\item Si M acepta, $\underline{rechaza}$
+	Si M rechaza, $\underline{acepta}$
+\end{enumerate}
+L(M')= A
+Si A es reconocible y co-reconocible.
+Proponemos una MT M que decide a A que usa a $M_1$ y $M_2$ que reconocen a A y $\barwedge{A}$ respectivamente.
+M = "Con entrada w:
+\begin{enumerate}
+	\item Simula en paralelo a $M_1$ y $M_2$ con entrada w
+	\item Si $M_1$ acepta, $\underline{acepta}$
+	\item Si $M_2$ acepta, $\underline{rechaza} \blacksquare$\\
+\end{enumerate}
+
+$\bf{Cor}$: El complemento de $A_{TM}$ no es reconocible.
+
+Dem: $A_{TM}$ es reconocible. Si su complemento fuera reconocible, entonces $A_{TM}$ sería decidible pero no lo es $\blacksquare$\\
+
+
+$H_{TM} = \{<M,w> | \text{M es una MT y M se detiene con entrada w}\}$
+
+$\bf{Prop}$: $H_{TM}$ es indecible
+
+Dem: Supongamos que R decide $H_{TM}$
+Proponemos la MT S, dada por:
+S = " Con entrada $<M,w>$, donde M es una MT:
+\begin{enumerate}
+	\item Ejecuta a R con entrada <M,w>
+	\item Si R rechaza, $\underline{rechaza}$
+	\item Simula a M con entrada w
+	\item Si M acepta, $\underline{acepta}$, si no, $\underline{rechaza}$"
+\end{enumerate}
+Claramente, S decide a $A_{TM}$! $\blacksquare$
+
+
+
+
+
+\end{document}
