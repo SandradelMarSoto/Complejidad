@@ -507,7 +507,123 @@ S = " Con entrada $<M,w>$, donde M es una MT:
 Claramente, S decide a $A_{TM}$! $\blacksquare$
 
 
+$E_{TM} = \{<M> | L(M) = \emptyset\}$
+
+ $\bf{Prop}$ $E_{TM}$ no es decidible.
+ 
+ Dem. Por contradicción. Supongamos que sí es decidible y sea R un decididor para $E_{TM}$. Construimos a S un decididor para $A_{TM}$ dado por:
+ S : "Con entrada $<M,w>$ donde M es una MT:
+ \begin{enumerate}
+ 	\item Construye a la MT $M_1$ dada por:
+ 	$M_1$ = "Con entrada x:
+ 	\begin{enumerate}
+ 		\item Si $x \neq w$, rechaza
+ 		\item  Si $x = w$, corre a M con entrada w y acepta si M lo hace".
+ 	\end{enumerate}
+ 	\item Ejecuta R con entrada $<M_1>$
+ 	\item Si R acepta, $\underline{rechaza}$. Si R rechaza, $\underline{acepta}$".
+ \end{enumerate}
+
+El lenguaje de $M_1$ es $|w|$ o $\emptyset$ dependiendo de si M acepta o no a w respectivamente. Por tanto, S es un decididor para $A_{TM} \blacksquare$
 
 
+Entonces $E_{TM}$ no es decidible
+
+$REG_{TM} = \{<M> | M \text{es una Mt y L(M) es regular}\}$
+
+$\bf{Prop.}$ $REG_{TM}$ es indecidible
+
+Dem: Por contradicción. Sea R un decididor para $REG_{TM}$
+Proponemos la MT S dada por:
+S = " Con entrada $<M,w>$, donde M es una MT:
+\begin{enumerate}
+	\item Construye a la MT $M_2$ dada por:
+	$M_2$ = " Con entrada x:
+	\begin{enumerate}
+		\item Si x es de la forma $0^{2}$ acepta
+		\item  Si no, ejecuta M con entrada w y $\underline{acepta}$ a x si M acepta a w".
+	\end{enumerate}
+	\item Ejecuta R con entrada $<M_2>$
+	\item Si R acepta, $\underline{acepta}$. Si R rechaza, $\underline{rechaza}$.
+\end{enumerate}
+
+Como entonces S decide a $A_{TM} \blacksquare$
+
+\subsection{Reducibilidad}
+
+Tenemos dos problemas:
+Problema 1 (Entrada: $I_1$ Q: $Q_1$) Problema 2(Entrada: $I_2$ Q: $Q_2$)
+
+Si tenemos un algoritmo $M_1$ para resolver Prob 2, Y un algoritmo $M_2$ que tiene una instancia $I_1$ del Prob 1 y la transforma en una instancia $I_2$ del Prob 2, de tal forma que $I_2$ es una sí-instancia del Prob. 2 si y sólo si $I_1$ es una sí-instancia del Prob 1, entonces
+
+Proponemos $M_3$ que resuelve Prob 1.
+
+$I_1 \rightarrow^{M_2} I_2$ 
+Si $M_1$ responde sí, tenemos que $I_2$ es una sí-instancia $\rightarrow$ $I_1$ es una sí-instancia
+Si $M_1$ responde no, tenemos que $I_2$ es una no-instancia $\rightarrow$ $I_1$ es una no-instancia
+
+Si Prob. 1 se reduce a Prob. 2 y hay un algoritmo para resolver Prob. 2, entonces hay un algoritmo para resolver el problema 1.
+
+Si sabemos que no hay un algoritmo para resolver Prob. 1 y podemos reducir Prob. 1 a Prob. 2, entonces no hay un algoritmo para resolver al Prob. 2 
+
+Problema 1 $E_{TM}$
+Entrada: $<M>$ con M una MT
+Pregunta: ¿L(M) = $\emptyset$?
+
+Problema 2 $EQ_{TM} = \{<M_1,M_2>| M_1 \text{ y } M_2 \text{ son MT y } L(M_1) = L(M_2) \}$
+Entrada: $<M_1, M_2>$ con $M_1$ y $M_2$ MT
+Pregunta: ¿L($M_1$) = L($M_2$)?
+
+Vamos a mostrar que el problema 1 se reduce al problema 2
+$<M> \rightarrow^{A} <M, M_2>$ donde $M_2$ es una MT que rechaza a todas sus entradas. Si L(M) = $\emptyset$ entonces $L(M) = L(M_2)$
+Si $L(M) \neq \emptyset$ entonces $L(M) \neq L(M_2)$
+
+$\bf{Prop.}$ $EQ_{TM}$ es indecidible
+Dem: Por contradicción. Suponemos que R es una MT que decide a $EQ_{TM}$. Proponemos una MT S.
+S = "Con entrada $<M>$ donde M es una MT:
+\begin{enumerate}
+	\item Ejecuta R con entrada $<M,M_2>$ donde $M_2$ es una MT que rechaza todas las entradas
+	\item Si R acepta, $\underline{acepta}$. Si R rechaza, $\underline{rechaza}$.
+	Entonces si R acepta a $<M,M_2>$ que dado que $L(M_2) = \emptyset$, entonces $L(M) = \emptyset$. Si R rechaza a $<M, M_2>$ entonces $L(M) \neq \emptyset$ luego, $S$ acepta a $<M>$ si y sólo si $L(M) \neq \emptyset$.
+	Por lo tanto $S$ decide a $E_{TM}$!
+\end{enumerate}
+
+$\bf{Def.}$ Una función $f: \Sigma^{*} \rightarrow \Sigma^{*}$ es $\underline{computable}$ si existe una MT M que con cualquier entrada $w$ se detiene con una reducción $f(w)$ en su cinta
+
+$\bf{Def.}$ Un lenguaje A es reducible si por funciones (muchas o una) al len. B, $A \leq_{M} B$ si existe una función computable $f_ : \Sigma^{*} \rightarrow \Sigma^{*}$ tal que para cada $w \in \Sigma^{*}$, $w \in A$ si y solo si $f(w) \in B$
+
+$\bf{Teo.}$ Si $A \leq_{M} B$ y B es decidible, entonces A es decidible.
+Dem: Sea M un decididor para B y sea f la reducción de A a B. Proponemos a N.
+N = "Con entrada w:
+\begin{enumerate}
+	\item Calcula $f(w)$
+	\item Ejecuta M con entrada $f(w)$
+	\item Responde lo mismo que M ".
+\end{enumerate}
+
+Si $w \in A$, por la def. de reducción, $f(w) \in B$, y por tanto M acepta a $f(w)$ y N acepta a w. Si $w \notin A$, $f(w) \notin B$, y M rechaza a $f(w)$ y N rechaza.
+Luego, N decide a A $\blacksquare$
+
+$\bf{Cor}$ Si $A \leq_{M} B$ y A no es decidible, entonces B no es decidible.
+
+$\bf{Prop} $$H_{TM}$ es indecidible
+Dem: Veamos que el problema del paro se reduce al problema de la aceptación $A_{TM} \leq H_{TM}$ 
+Proponemos a F tal que
+F = "Con entrada $<M,w>$ donde M es una MT:
+\begin{enumerate}
+	\item Construye la MT M' dado que:
+	M' = "Con entrada x:
+	\begin{enumerate}
+		\item Corre a M con entrada x
+		\item Si M acepta, $\underline{acepta}$
+		\item Si M rechaza, $\underline{se\ cicla}$
+	\end{enumerate}
+	\item Devuelve $<M',w>$"
+\end{enumerate}
+
+Si $<M, w> \in A_{TM}$, entonces $<M',w> \in H_{TM}$.
+
+Si $<M, w> \notin A_{TM}$, entonces $<M',w> \notin H_{TM} \blacksquare$  
 
 \end{document}
+
