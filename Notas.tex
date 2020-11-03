@@ -578,7 +578,8 @@ Vamos a mostrar que el problema 1 se reduce al problema 2
 $<M> \rightarrow^{A} <M, M_2>$ donde $M_2$ es una MT que rechaza a todas sus entradas. Si L(M) = $\emptyset$ entonces $L(M) = L(M_2)$
 Si $L(M) \neq \emptyset$ entonces $L(M) \neq L(M_2)$
 
-$\bf{Prop.}$ $EQ_{TM}$ es indecidible
+$\bf{Prop.}$ $EQ_{TM}$ es indecidible.
+
 Dem: Por contradicción. Suponemos que R es una MT que decide a $EQ_{TM}$. Proponemos una MT S.
 S = "Con entrada $<M>$ donde M es una MT:
 \begin{enumerate}
@@ -593,6 +594,7 @@ $\bf{Def.}$ Una función $f: \Sigma^{*} \rightarrow \Sigma^{*}$ es $\underline{c
 $\bf{Def.}$ Un lenguaje A es reducible si por funciones (muchas o una) al len. B, $A \leq_{M} B$ si existe una función computable $f_ : \Sigma^{*} \rightarrow \Sigma^{*}$ tal que para cada $w \in \Sigma^{*}$, $w \in A$ si y solo si $f(w) \in B$
 
 $\bf{Teo.}$ Si $A \leq_{M} B$ y B es decidible, entonces A es decidible.
+
 Dem: Sea M un decididor para B y sea f la reducción de A a B. Proponemos a N.
 N = "Con entrada w:
 \begin{enumerate}
@@ -606,7 +608,8 @@ Luego, N decide a A $\blacksquare$
 
 $\bf{Cor}$ Si $A \leq_{M} B$ y A no es decidible, entonces B no es decidible.
 
-$\bf{Prop} $$H_{TM}$ es indecidible
+$\bf{Prop} $$H_{TM}$ es indecidible.
+
 Dem: Veamos que el problema del paro se reduce al problema de la aceptación $A_{TM} \leq H_{TM}$ 
 Proponemos a F tal que
 F = "Con entrada $<M,w>$ donde M es una MT:
@@ -625,5 +628,156 @@ Si $<M, w> \in A_{TM}$, entonces $<M',w> \in H_{TM}$.
 
 Si $<M, w> \notin A_{TM}$, entonces $<M',w> \notin H_{TM} \blacksquare$  
 
+$A \leq_M B$
+B decidible entonces A decidible
+A indecidible entonces B indecidible
+
+$A_{TM} \leq H_{TM}$
+
+$E_{TM} \leq EQ_{TM}$
+$<M> \rightarrow <M,M_2>$, $M_2$ rechaza todas las codificaciones
+
+$<M> \in E_{TM} \leftrightarrow L(M) = \emptyset \leftrightarrow L(M) = L(M_2) \leftrightarrow <M_1,M_2> \in EQ_{TM}$
+
+$E_{TM}$ es indecidible 
+$\overline{E_{TM}}$ es indecidible 
+$<M, w>$
+$M_1$ = "Con entrada x
+\begin{enumerate}
+	\item Si $x \neq w$, $\underline{rechaza}$
+	\item Ejecuta M con entrada w
+	\item Si M acepta, $\underline{acepta}$
+\end{enumerate}
+
+$L(M_1) = \emptyset \text{si w} \notin L(M) |w| \text{si w} \in L(M)$
+
+$<M, w> \rightarrow <M_1>$
+
+$<M_1,w> \in A_{TM} \leftrightarrow$ M acepta a w $\leftrightarrow L(M_1) \neq \emptyset \leftrightarrow <M_1> \notin E_{TM}$ 
+
+$\bf{Obs}$ L es decidible si y sólo si $\overline{L}$ complemento es decidible.
+
+Dem: Si R decide a L proponemos a S dada por:
+S = "Con entrada w
+\begin{enumerate}
+	\item Ejecuta R con entrada w
+	\item Si R acepta, $\underline{rechaza}$ y s R rechaza, $\underline{acepta}$
+\end{enumerate}
+
+$\bf{Obs}$ Si $A \leq_{M} B$ entonces $ \overline{A}\leq_{M} \overline{B}$.
+Dem: f computable tal que $w \in A$ si y sólo si $f(w) \in B$ luego $e \notin A$ si y sólo si $f(w) \notin B$
+
+$\bf{Obs}$ Si $A \leq_{M} B$ y B es reconocible, entonces A es reconocible
+R es un reconocedor $f(w) \in B$ si y sólo si $w \in A$
+S = "Con entrada w
+\begin{enumerate}
+	\item Calcular f(w)
+	\item Ejecutar R con entrada f(w)
+	\item Responder lo mismo que R"
+\end{enumerate}
+
+$S(w) = R(f(w))$
+
+
+$A_{TM} \leq \overline{E_{TM}} \Rightarrow \overline{A_{TM}} \leq E_{TM}$
+
+$\overline{E_{TM}}$ es reconocible
+
+$A_{TM} \leq_M \overline{E_{TM}}$ ¿$A_{TM} \leq_M E_{TM}$? No
+
+$\overline{A_{TM}} \leq_M \overline{E_{TM}} \Rightarrow \overline{E_{TM}}$ no es reconocible !\\
+
+$\bf{Prop}$ $EQ_{TM}$ no es reconocible ni co-reconocible.
+
+$A_{TM} \leq \overline{EQ_{TM}}$
+$A_{TM} \leq EQ_{TM}$
+Dem: F = "Con entrada <M,w> donde M es una MT
+\begin{enumerate}
+	\item Construimos las MT $M_1$ y $M_2$ dadas por 
+	$M_1$ = "Con entrada x:
+	\begin{enumerate}
+		\item $\underline{Rechaza}$"
+	\end{enumerate}
+	$M_2$ = "Con entrada x:
+	\begin{enumerate}
+		\item Ejecuta a M con entrada w.
+			  Si M acepta, $\underline{acepta}$
+	\end{enumerate}
+	\item Devuelve $<M_1, M_2>$
+\end{enumerate}
+Notemos que $L(M_1) = \emptyset$ y $L(M_2) = \Sigma^{*}$ si M acepta a w o $\emptyset$ si M no acepta a w.
+
+Si $<M,w> \in A_{TM}$, entonces $L(M_2) = \Sigma^{*}$ y $<M_1,M_2> \in \overline{EQ_{TM}}$.
+
+Si $<M_1,M_2> \in \overline{EQ_{TM}}$, entonces $L(M_2) \neq L(M_1)$, entonces $L(M_2) = \Sigma^{*}$ y por tanto M acepta a w y $<M,w> \in A_{TM}$
+
+Luego F calcula una reducción $A_{TM} \leq_M \overline{EQ_{TM}}$
+
+Si hacemos que $M_1$ acepte en lugar de rechazar, tenemos que:
+Si $<M,w> \in A_{TM}$, entonces $L(M_2) = \Sigma^{*}$ y $<M_1,M_2> \in EQ_{TM}$.
+
+Si $<M_1,M_2> \in EQ_{TM}$, entonces $L(M_2) \neq L(M_1)$, entonces $L(M_2) = \Sigma^{*}$ y por tanto M acepta a w y $<M,w> \in A_{TM}$
+
+\section{Complejidad}
+
+Vamos a trabajar únicamente con máquinas de Turing decidibles
+
+Sea M una MT que se detiene en todas sus entradas. La complejidad (en tiempo) de M es la función $f: \mathds{N} \rightarrow \mathds{N}$ tal que $f(n)$ es el mejor tiempo que puede tardarse M en ejecutarse con una entrada de longitud n. Si $f(n)$ es el tiempo de ejecución de M, diremos que M corre en tiempo $f(n)$ o que M es de tiempo $f(n)$.
+
+Sea $t: \mathds{N} \rightarrow \mathds{R}$ una función. La clase de de complejidad en tiempo TIME(t(n)) es el conjunto de todos los lenguajes decidibles en tiempo $\mathcal{O}(t(n))$ por una MT
+
+$L = \{0^{n}1^{n}\} n \in \mathds{N}$
+M = "Con entrada w:
+\begin{enumerate}
+	\item Recorre la cinta y si encuentra un 1 a la derecha de un 0, $\underline{rechaza}$ ($\mathcal{O}(n)$)
+	\item Repite mientras haya 0 y 1 en la cinta 
+	\item Recorre la cinta(entrada) y borra el primer 0 y el primer 1. ($\mathcal{O}(n) \cdot \frac{n}{2}$) 
+	\item Si sobra algún 0 o algún 1 en la cinta $\underline{rechaza}$. Si no, $\underline{acepta}$". ($\mathcal{O}(n)$)
+\end{enumerate}
+
+$M \in TIME(n^2)$ M es de tiempo $\mathcal{O}(n^{2})$
+$L \in TIME(t(n))$
+
+$TIME(n) \subseteq TIME(n^2)$
+
+
+$M_2$ (Máquina de Turing con 2 cintas)= "Con entrada w:
+\begin{enumerate}
+	\item Recorre la entrada y $\underline{rechaza}$ si hay un 0 a la derecha de 1. ($\mathcal{O}(n)$)
+	\item Repite mientras haya 0 y en 1 en la cinta ($\mathcal{O}(\log{n})$)
+	\item Revisa si el número de 0 y 1 es par o impar. Si es impar, $\underline{rechaza}$ ($\mathcal{O}(n)$)
+	\item Recorre la cinta borrando un 0 si y uno no y un 1 si y uno no, empezando por el primero. ($\mathcal{O}(n)$)
+	\item Si hay 0 o 1 en la cinta, $\underline{rechaza}$. Si no, $\underline{acepta}$" ($\mathcal{O}(n)$)
+\end{enumerate}
+
+$\mathcal{O}(n) + \mathcal{O}(\log{n}) \cdot 2\cdot \mathcal{O}(n)  + \mathcal{O}(n) = \mathcal{O}(n \log{n})$
+
+$M_2$ corre en tiempo $\mathcal{O}(n \log{n})$ ó $\Theta(n \log{n})$
+
+$L \in TIME(n\log{n})$
+$L \in TIME(n^2)$
+
+
+$M_3$ (Máquina de Turing con 3 cintas)= "Con entrada w:
+\begin{enumerate}
+	\item Recorre la entrada y copia los 0 en la cinta 2 y los 1 en la cinta 3 ($\mathcal{O}(n)$)
+	\item Repite mientras haya 0 en la cinta 2 y 1 en la cinta 3 ($\mathcal{O}(n)$)
+	\item Borra un 0 en la cinta 2 y un 1 en la cinta 3. ($\mathcal{O}(1)$)
+	\item Si los 0 se acaban antes que los 1, o viceversa, $\underline{rechaza}$. De otro modo $\underline{acepta}$". ($\mathcal{O}(n)$)
+\end{enumerate}
+
+$M_3$ corre en tiempo $\mathcal{O}(n)$
+
+$L \in TIME(n \log{n})$ 
+Cambiando el modelo $\rightarrow L \in TIME(n)$
+
+$\bf{Teo}$ Sea t(n) una función con $t(n) \geq n$
+Entonces toda MT multicinta de tiempo t(n) tiene una MT de una sola cinta equivalente y de tiempo $\mathcal{O}(t(n^2))$
+
+Dem: Utilizamos la simulación de una MT multicinta M con una MT de una sola cinta S.
+Para simular un paso de M, S recorre la entrada y ubica el símbolo que lee cada cabezal virtual; esto lleva tiempo la longitud de la cadena actualmente en su cinta. Esta longitud es la suma de las longitudes de los contenidos de todas las cintas de M. Cada cinta de M contiene a lo más t(n) símbolos (pues se ejecuta por a lo más tiempo t(n)) En total, este paso se lleva tiempo $k \cdot t(n) \in \mathcal{O}(t(n))$
+Después, recorre nuevamente la cinta, actualizando las acciones de M. Quizá, haciendo k shifts en el proceso. Este recorrido junto con los shifts se lleva tiempo $ k \cdot \mathcal{O}(t(n))$ que es $\mathcal{O}(t(n))$. Así, S se tarda $\mathcal{O}(t(n))$ en simular un paso de M, y tiene que simular t(n) pasos, luego el tiempo total es $\mathcal{O}(t(n)^2) \blacksquare$.
+
+N es una MTN t(n) $\rightarrow$ existe M MTD equivalente $\mathcal{O}(2^{t(n)})$
 \end{document}
 
