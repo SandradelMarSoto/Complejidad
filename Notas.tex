@@ -769,7 +769,7 @@ $M_3$ (Máquina de Turing con 3 cintas)= "Con entrada w:
 $M_3$ corre en tiempo $\mathcal{O}(n)$
 
 $L \in TIME(n \log{n})$ 
-Cambiando el modelo $\rightarrow L \in TIME(n)$
+Cambiando el modelo $\rightarrow L \in TIME(n)$\\
 
 $\bf{Teo}$ Sea t(n) una función con $t(n) \geq n$
 Entonces toda MT multicinta de tiempo t(n) tiene una MT de una sola cinta equivalente y de tiempo $\mathcal{O}(t(n^2))$
@@ -779,5 +779,210 @@ Para simular un paso de M, S recorre la entrada y ubica el símbolo que lee cada
 Después, recorre nuevamente la cinta, actualizando las acciones de M. Quizá, haciendo k shifts en el proceso. Este recorrido junto con los shifts se lleva tiempo $ k \cdot \mathcal{O}(t(n))$ que es $\mathcal{O}(t(n))$. Así, S se tarda $\mathcal{O}(t(n))$ en simular un paso de M, y tiene que simular t(n) pasos, luego el tiempo total es $\mathcal{O}(t(n)^2) \blacksquare$.
 
 N es una MTN t(n) $\rightarrow$ existe M MTD equivalente $\mathcal{O}(2^{t(n)})$
-\end{document}
 
+Toda MT multicinta $M_1$ tiene una MT $M_2$ de una cinta tal que si $M_1$ corre en un tiempo t(n), entonces $M_2$ es de tiempo $\mathcal{O}(t(n^2))$\\
+
+$\bf{Def}$ Sea t: $\mathds{N} \rightarrow \mathds{N}$ tal que $t(n) \geq n$ para cada $n \in \mathds{N}$. Decimos que la MTN N corre un tiempo t(n) si t(n) es el máximo número de pasos que debe realizar N para detenerse con una entrada de longitud n. N es un decididor (Todas las ramas terminan).
+
+M simula a N
+\begin{enumerate}
+	\item cinta w - entrada de N
+	\item cinta de trabajo
+	\item generar dirección 
+\end{enumerate}
+
+$\bf{Teo}$ Si N es una MTN de tiempo t(n) que es un decididor, donde $t(n) \geq n$ p.c. $n \in \mathds{N}$, entonces existe una MTD, D, tal que D es equivalente a N y es de tiempo $2^{\mathcal{O}(t(n))}$.
+
+Dem: Consideremos la simulación de N por una MTD de 3 cintas vista anteriormente. Con una entrada de longitud n, cada rama de la ejecución no determinista de N tiene longitud a lo más t(n).Además cada nodo en el árbol tiene a lo más b hijos. Hay a lo más $b^{t(n)}$ hojas en el árbol y a lo más, el mismo número de vértices internos , i.e. hay $\mathcal{O}(b^{t(n)})$ vértices en el árbol de ejecución de N.
+El tiempo que toma a M iniciar en la raíz y simular una rama de la ejecución de N hasta un vértice dado, es a lo más t(n).
+Luego, hay $\mathcal{O}(b^{t(n)})$ vértices en el árbol y simular a M para llegar a cada uno de ellos en tiempo t(n), i.e., la simulación completa toma tiempo $t(n) \cdot \mathcal{O}(b^{t(n)}) = \mathcal{O}(b^{t(n)}) = \mathcal{O}(2^{t(n)}) = 2^{\mathcal{O}(t(n))}$. Como M tiene 3 cintas, la podemos simular con una MT de una sola cinta en tiempo $2^{2\mathcal{O}(t(n))} = 2^{\mathcal{O}(2 t(n))} = 2^{\mathcal{O}(t(n))}\blacksquare$\\
+
+
+$\bf{Def}$ La clase P es la clase de lenguajes decidible por una MTD de una sola cinta en tiempo polinomial, i.e. $P = \bigcup_{t \in \mathds{N}} TIME(n^t)$
+
+$\bf{Def}$ La clase NP es la clase de lenguajes decidible por una MTN de una sola cinta en tiempo polinomial, i.e. $NP = \bigcup_{t \in \mathds{N}} NTIME(n^t)$
+
+$NTIME(t(n))$ = Todos los lenguajes L tales que hay una MTN de tiempo t(n) que decide a L.
+
+NP es Non-deterministic Polynomial, i.e. una MT no determinista lo puede decidir en tiempo Polinomial.
+
+PATH$\{ < D, s, t >$| hay una st-trayectoria (camino que no repite vértices) dirigida en D$\}$
+
+$\bf{Prop}$: PATH $\in$ P
+
+Dem: Proponemos a la MT M dada por 
+M = "Con entrada <D, s, t> donde D es una digráfica y s y t son vértices de D:
+\begin{enumerate}
+	\item Marca S.
+	\item Repite hasta que no marquen vértices nuevos.
+	\item  Revisa cada flecha de D. Si hay alguna cuya cola esté marcada y cuya cabeza no esté marcada, marca la cabeza.
+	\item Si t está marcado, $\underline{acepta}$. Si no, $\underline{rechaza}$
+\end{enumerate}
+
+Los pasos 1 y 4 se ejecutan una única vez y toman tiempo $\mathcal{O}(n)$. A lo más, el paso 3 se repite $|V| (es \mathcal{O}(n))$ veces. Cada ejecución de 3 es $\mathcal{O}(n)$. Luego, todas las ejecuciones de 3 se pueden hacer en $\mathcal{O}(n^2)$.
+
+Así, M es de tiempo $\mathcal{O}(n^2) \blacksquare$
+
+RELPRIME = $\{ <x,y> |x$ y $y$ son primos relativos$\}$
+
+$\bf{Prop:}$ RELPRIME $\in$ P
+
+Dem: Proponemos a E una MT dada por 
+
+E = "Con entrada $<x,y>$ donde $x$ y $y$ son enteros positivos
+\begin{enumerate}
+	\item Repite hasta que $y = 0$
+	\item $\  $	Asigna $x \leftarrow x (mod y)$
+	\item $\  $	Intercambia $x$ y $y$
+	\item Devuelve x
+\end{enumerate}
+
+Proponemos a M dada por:
+
+M = "Con entrada $<x,y>$ donde $x$ y $y$ son enteros positivos
+\begin{enumerate}
+	\item Ejecuta E con entrada $<x,y>$
+	\item Si E devuelve 1 $\underline{acepta}$. Si no, $\underline{rechaza}$
+\end{enumerate}
+
+Como cada paso individual se puede hacer en tiempo polinomial, basta ver cuantas veces se repiten los pasos 2 y 3. 
+
+Si $\frac{x}{2} \geq y$, $x (\mod y) < y \leq \frac{x}{2}$
+Si $\frac{x}{2} \leq y$, $x (\mod y) = x - y < \frac{x}{2}$
+
+Cada dos vueltas del ciclo, el valor de x y el de y disminuyen a la mitad. Luego, estos pasos se realizan $\mathcal{O}(\log(n))$ veces$\blacksquare$
+
+$EQ_{LLC}$ es indecidible.\\
+
+Sí-certificado. Algoritmo para verificar el certificado (simple).
+
+Un $\underline{verificador}$ para el lenguaje A es una MT decididora V tal que $A = \{w | \text{V acepta} <w,c> \text{p.c cadena c}\}$
+La complejidad de V se mide en términos de la longitud de w, luego, un verificador polinomial para A es un verificador que corre en tiempo polinomial respecto a $|w|$.\\
+
+Ejemplo:
+L = $\{<G>| G \text{es k-coloreable}\}$
+V = "Con entrada $<G,c>$ donde G es una gráfica y c es una k-coloración de G:
+\begin{enumerate}
+	\item Revisa que cada vértice aparezca una única vez en c, si no, $\underline{rechaza}$ $\mathcal{O}(|V|^{2})$
+	\item  Para cada arista e de G, verifica si los extremos de e tienen colores distintos. Si no, $\underline{rechaza}$ $\mathcal{O}(|E|)$
+	\item Revisa que haya a lo más k-colores en c. Si no, $\underline{rechaza}$. $\mathcal{O}(|V|)$
+	\item  $\underline{Acepta}$
+\end{enumerate}
+
+El certificado es una cadena, verificador es un algoritmo.
+
+Ejemplos de problemas con sus verificadores:
+
+k-col $<$G, coloración$>$
+
+ciclo hamiltoniano $<$G, ciclo hamiltoniano$>$
+
+graf conexa $<$G, árbol generador$>$
+
+sat $<$ $\phi$,$\tau$(asignación de verdad)$>$\\
+
+$\bf{Teo}$ Un lenguaje L está en NP si y sólo si tiene un verificador polinomial.
+
+$\bf{Def}$ Un verificador para un lenguaje A es una MT decididora tal que $A =\{w | V \text{acepta} <w,c> \text{p.a. cadena c}\}$
+
+HAMPATH = $\{<D,s,t>| D \text{es una digráfica, s y t vértices de D y tales que existe una s-t trayectoria hamiltoniana} \}$
+
+$\bf{Prop.}$ HAMPATH $\in NP$
+
+Dem: Proponemos una MTN N tal que: 
+
+N = "Con entrada $<D,s,t>$ donde D es una digráfica, s,t$\in V_D$:
+\begin{enumerate}
+	\item Escribe una lista de enteros $p_1,..,p_{|V|}$ cada número en la lista se elige de manera no determinista entre 1 y |V| $\mathcal{O}(|V|)$
+	\item Si hay repeticiones en la lista $\underline{rechaza}$ $\mathcal{O}(|V|^{2})$
+	\item Revisa si $p_1 = s$ y $p_{|V|}=t$, si no, $\underline{rechaza}$ $\mathcal{O}(|V|)$
+	\item Para cada i entre 1 y |V|-1, revisa que $(p_i,p_i+1)$ sea una flecha en D. Si no $\underline{rechaza}$ $\mathcal{O}(|V|^{t})$ $t \in \mathds{N}$
+	\item Acepta
+\end{enumerate}
+
+N corre en tiempo polinomial respecto a |V|, por lo tanto HAMPATH $\in$ NP $\blacksquare$
+
+$\bf{Teorema}$ Un lenguaje L está en NP si y sólo si tiene un verificador polinomial 
+
+Dem: Si V es un verificador polinomial para L, proponemos la MTN N que decide a L dada por:
+Supongamos que V es de tiempo $n^{t}$
+N: "Con entrada w de longitud n:
+\begin{enumerate}
+	\item Elige de manera no determinista una cadena c de longitud a lo más $n^t$
+	\item Ejecuta V con entrada $<w,c>$
+	\item Si V acepta, $\underline{acepta}$. Si no,  $\underline{rechaza}$ $\mathcal{O}(n^t)$
+\end{enumerate}
+
+Si L es decidido por la MTN N y la rama de la ejecución no determinista está codificada por C, entonces proponemos a V dada por:
+V="Con entrada $<w,c>$
+\begin{enumerate}
+	\item Simula a N con entrada w usando cada símbolo de c como la siguiente elección en la ejecución no determinista de N que acepta a w. $\mathcal{O} =$ El tiempo que tarda N en decidir a w
+	\item Si esta rama de la ejecución de N acepta, $\underline{acepta}$. Si no, $\underline{rechaza} \blacksquare$ $\mathcal{O}(1)$
+\end{enumerate}
+
+$L \in NP$
+L = $\{w| \text{V acepta} <w,c> \text{para alguna cadena c}\}$
+V verificador polinomial para L:
+\begin{enumerate}
+	\item "Adivinar" una solución
+	\item Verificar que la solución es correcta
+\end{enumerate}
+
+Si G es una gráfica, un clan de G es un subconjunto C de V tal que G[c](gráfica inducida) es completa. Un k-clan es un clan de cardinalidad k. El máximo entero k tal que G tiene un k-clan es el número de clan de G $\omega_G$
+
+CLAN= $\{<G,k>| \text{G es una gráfica con un k-clan}\}$
+
+(Mapping reducibility)
+Existe una MT que computa f:$ \Sigma^{*} \rightarrow \Sigma^{*}$ en tiempo polinomial, $\mathcal{O}(n^k)$ tal que $A \leq_m B$, $w \in A$ si y sólo si $f(w) \in B$. M decide B en tiempo polinomial.
+M se ejecuta con entrada f(w), en |f(w)| en $\mathcal{O}(n^k)$, luego su tiempo de ejecución es $\mathcal{O}(|f(w)|^l) = \mathcal{O}((n^k)^l) = \mathcal{O}((n^{k \cdot l}) $ 
+F con entrada w computa f(w) en tiempo $\mathcal{O}(|w|^k) = \mathcal{O}(n^k)$
+
+$\bf{Def.}$ Sean A y B lenguajes. Decimos que A es reducible en tiempo polinomial mediante funciones a B, $A \leq_p B$ si existe una función computable en tiempo polinomial $f: \Sigma^* \rightarrow \Sigma^*$ tal que, para cada $w \in \Sigma^*$ se tiene: $w \in A$ si y sólo si $f(w) \in B$.
+Se dice que f es una reducción polinomial de A en B.
+
+$\bf{Prop.}$ Si $A \leq_P B$ y $B \in P$, entonces $A \in P$
+Dem. Sea M la MT que decide a B en tiempo polinomial, y sea f la reducción polinomial de A en B. Proponemos a S una MT que decide a A, dada por:
+S: "Con entrada w:
+\begin{enumerate}
+	\item Calcula f(w)
+	\item  Ejecuta M con entrada f(w) y responde lo mismo que M".
+\end{enumerate}
+
+Para ver que S decide a A, consideremos $w \in A$. Entonces $f(w) \in B$ y por lo tanto M acepta a f(w). Luego, S acepta a w. Recíprocamente si S acepta a w, entonces M acepta a f(w), i.e. $f(w) \in B$ y como f es una reducción, $w \in A$. Se sigue que S decide a A. Claramente el paso 1 se realiza en tiempo polinomial or la definición de reducción polinomial y el paso 2 también, pues la composición de polinomios es un polinomio.
+(Si f(w) es $\mathcal{O}(n^k)$ M  con entrada f(w) tarda $\mathcal{O}(n^k)^l =  \mathcal{O}(n^{k \cdot l})$)
+
+Si $A \leq_P B$ y $A \notin P$ entonces $B \notin P$
+
+SAT = $\{<\varphi> | \varphi$ | $\varphi$ es una fórmula booleana satisfacible$\}$
+
+Una literal es una variable proporcional o su negación.
+
+Una clausula es una disyunción con literales.
+
+Una fórmula booleana está en FNC si es una conjunción de disyunciones.
+
+$SAT_{FNC} = \{ <\varphi>| \varphi$ es una función booleana en FNC satisfacible $\}$
+
+$SAT_{FNC} \leq_P SAT$
+
+Una fórmula está en 3-FNC si es una conjunción de clausulas de tamaño 3.
+
+3SAT = $\{<\varphi> | \varphi$ es una fórmula booleana satisfacible en 3-FNC $\}$
+
+CLAN = $\{<G,k>|$ G es una gráfica con un clan de cardinalidad k  $\}$
+
+$\bf{Prop.}$ 3SAT $\leq_P$ CLAN
+Modela el problema de la izquierda con el de la derecha. Sea $\varphi \in 3FNC$, entonces $\varphi = \cap_{i=1}^{k} (a_i \cup b_i \cup c)$  ($f(<\varphi>) = <G,k>$) 
+Para cada clausula en $\varphi$ creamos 3 vértices en G, etiquetados con las literales correspondientes en la clausula $(V = \cup_{i=1}^{k}\{a_i,b_i,c_i\})$ 
+Cualesquiera dos vértices de G son adyacentes, excepto:
+\begin{enumerate}
+	\item Vértices correspondientes a la misma tripleta (De la misma clausula)
+	\item Vértices con etiquetas que generan una contradicción, e.g. $x_i$ y $\overline{x_i}$
+\end{enumerate}
+
+$\varphi = (x_1 \cup x_2 \cup x_3) \& (\overline{x_1} \cup \overline{x_2} \cup x_3) \& (\overline{x_1} \cup x_2 \cup \overline{x_3})$
+$(G, k)$
+
+
+
+\end{document} 
