@@ -980,9 +980,136 @@ Cualesquiera dos vértices de G son adyacentes, excepto:
 	\item Vértices con etiquetas que generan una contradicción, e.g. $x_i$ y $\overline{x_i}$
 \end{enumerate}
 
-$\varphi = (x_1 \cup x_2 \cup x_3) \& (\overline{x_1} \cup \overline{x_2} \cup x_3) \& (\overline{x_1} \cup x_2 \cup \overline{x_3})$
-$(G, k)$
+Veamos que $<\varphi> \in 3SAT$ si y sólo si $<G,k> \in CLAN$.
+
+Si $<\varphi> \in 3SAT$ existe $\tau$ asignación de verdad que satisface a $\varphi$. Sea $\{x_i\}_{\{i \in 1 ... k\}}$ un conjunto de literañes de $\varphi$ tal que $\tau (x_i) = 1$ y $x_i$ pertenece a la i-ésima cláusula. Notemos que al recibir todas las $x_i$ el valor 1 bajo $\tau$, tenemos que no es posible encontrar a una literal y a su negación en $\tau$. Se sigue que en G los vértices correspondientes a $\{x_i\}_{i=1}^{k}$ es un clan de tamaño k. Luego $<G,k> \in CLAN$
+
+Si $<G,k> \in CLAN$, entonces G tiene un clan de tamaño k, $S \subseteq V$. Por la construcción de G no hay dos vértices de S en la misma tripleta, y no hay dos vértices de S tales que sus etiquetas sean contradictorias, por lo tanto podemos asignar 1 a cada terminal correspondiente a un vértice en S. Si llamamos $\tau$ a alguna asignación obtenida al extender la asignación antes descrita a todas las literales de $\varphi$, entonces $\tau$ satisface a $\varphi$ (pues le asigna el valor 1 al menos una variable en cada clausula).
+
+Así, f es una reducción
+$|V| = 3k$
+$|E| \cdot \mathcal{O}(k^2)$
+
+STABLE = $\{<G,E> | \text{G es una gráfica con un conjunto independiente de tamaño k}\}$
+
+CLIQUE = Todos son adyacentes dos a dos
+
+$CLIQUE \leq_P STABLE$
+$ <G,k> \mapsto <H,l>$
+$H = \overline{G}$
+$l = k$
 
 
+$<G,k> \in CLIQUE$, entonces G tiene un clan de tamaño k, digamos S. En $\overline{G}$ S es un conjunto independiente de tamaño k. Si $<\overline{G},k> \in STABLE$ entonces $\overline{G}$ tiene un conjunto independiente de tamaño k y pi tanto $\overline{G} = G$ tiene un clan de tamaño k, entonces $<G,k> \in CLIQUE$
+
+$\bf{Def}$ Sea G una digráfica. Un subconjunto $S\in V$ es \underline{convexo} si todos los vértices de cualquier geodésica (trayectoria de longitud mínima) entre pares de vértices distintos están contenidos en S. Usualmente, por conjunto convexo nos referimos a uno distinto de V.
+
+CONVEX = $\{<G,k>| \text{G tiene un conjunto convexo de tamaño k}\}$
+
+$CLIQUE \leq CONVEX$
+$<G,k> \mapsto <H,l>$
+
+H se obtiene de G al añadir dos vértices nuevos, $x$ y $y$, y hacerlos adyacentes a cada vértice en G, pero no entre sí.
+
+Si G tiene un k-clan S, $S \cup \{x\}$ es un clan, y por tanto es un conjunto convexo. Por tanto, H tiene un (k+1)-conjunto convexo
+
+$S \subseteq V_H$ es conexa.
+
+$S \subseteq V_G$
+
+Afirmamos S es un clan. De otro modo, $x \in S$
+Si $x \in S$, entonces $y \notin S$. Nuevamente S es un clan, pues de otro modo $y \in S$
+
+Por lo tanto G tiene un k-clan$\blacksquare$
+
+$|V_H| = |V_G| + 2$
+$|E_H| = |E_G| + 2|V_G|$
+
+CLIQUE $\leq_P$ CONVEX
+
+DConvex = $\{<D,k>| D \text{es una digráfica con un conjunto convexo de tamaño k}\}$
+
+$\bf{Prop.}$ CLIQUE $\leq$ DConvex
+
+La gráfica será:
+\begin{itemize}
+	\item Bipartita
+	\item Sin flechas simétricas
+	\item Con cuello 6 (ciclo más corto será de longitud 6)
+\end{itemize}
+
+Dem: 
+
+Gadgets 
+Por cada vértice de la gráfica hay un hexágono y para cada arista de la gráfica se unirá el vértice x del primer hexágono al y del segundo hexagono y el x del segundo hexagono al y del primer hexágono.
+
+La estructura de control será una trayectoria dirigida
+
+$|V_G| = 6|V_G| + 4$
+$|A_G| = 8|V_G| + 2|E_G| +3$
+
+Obs.
+\begin{itemize}
+	\item Si $n \in V_G$ y C un convexo de D $|C| \geq 2$, tal que $C \cap V_{Hu} \neq \emptyset$, entonces $V_{Hu} \in C$
+	\item Sea C un convexo de $D_1$ $|C| \geq 2$. Si $z_i \in C$, p.a. $i \in \{1...4\}$ entonces $C = V_0$
+	\item Sean $u,r\in V_G$ t.q. $d(u,r) \geq 2$, si C es un convexo en D t.q. $V_{Hu} \cap C \neq \emptyset \neq V_{Hu} \cap C$, ent. $C = V_D$
+	\item Si S es un clan de G, ent. $C = \cup_{u\in S} Hu$ es un convexo en D. Si G tiene un k-clan, entonces D tiene un 6k conjunto convexo.
+\end{itemize}
+
+Un lenguaje A es NP-completo si:
+\begin{itemize}
+\item $A \in NP$
+\item Para cada $B \in NP$, $B \leq_P A$
+\end{itemize}
+
+Si hubiera un algoritmo polinomial para resolver A, entonces tenemos un algoritmo polinomial para resolver cualquier problema en NP.
+
+Si L es NP-c y tenemos al lenguaje A t.q. 
+\begin{itemize}
+	\item $A \in NP$
+	\item $L \leq_P A$, entonces A es NP-c
+\end{itemize}
+
+$4-col = \{<G> | G \text{es una gráfica 4-coloreable} \}$
+
+$\bf{Prop}$ 4-col $\leq_P$ SAT
+
+$G \mapsto \varphi$
+
+$\varphi$ es satisfacible si y solo si G es 4-coloreable
+
+$x_{v c}$ El vértice v recibe el color c
+
+$C = \{a,b,c,d\}$
+
+$\varphi_{color} = \wedge_{v \in V_G}
+(x_{v a} \cap \overline{x_{v b}} \cap \overline{x_{v c}} \cap \overline{x_{v d}}) \cup
+(\overline{x_{v a}} \cap x_{v b} \cap \overline{x_{v c}} \cap \overline{x_{v d}}) \cup
+(\overline{x_{v a}} \cap \overline{x_{v b}} \cap x_{v c} \cap \overline{x_{v d}}) \cup
+(\overline{x_{v a}} \cap \overline{x_{v b}} \cap \overline{x_{v c}} \cap x_{v d})$
+
+$\varphi_{propia} = \wedge_{uv \in E_G}(\neg(x_{u a} \cap x_{\sigma a}) \cap
+\neg(x_{u b} \cap x_{v b}) \cap
+\neg(x_{u c} \cap x_{v c}) \cap
+\neg(x_{u d} \cap x_{v d}))$
+
+$\varphi = \varphi_{color} \cap \varphi_{propia}$
+
+Si G es 4-col, entonces $\varphi$ satisfacible.
+$\varphi$ satisfacible, entonces G es 4-col.
+
+k-coloracion se puede reducir a SAT en tiempo lineal
+
+$A$ es NP-completo
+
+$SubsetSum \in NP$
+
+$SubsetSum \leq_P A$
+
+M decide a A en tiempo polinomial
+
+$\bf{Teo}$ Cook-Levin SAT es NP-completo
+
+Dem: Sea $L \in NP$, entonces existe N una MTN que decide a L, el tiempo de ejecución de N es $\mathcal{O}(n^k)$ p.a. $k \in \mathds{Z}^+$
 
 \end{document} 
