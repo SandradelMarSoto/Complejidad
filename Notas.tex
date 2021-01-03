@@ -1112,4 +1112,134 @@ $\bf{Teo}$ Cook-Levin SAT es NP-completo
 
 Dem: Sea $L \in NP$, entonces existe N una MTN que decide a L, el tiempo de ejecución de N es $\mathcal{O}(n^k)$ p.a. $k \in \mathds{Z}^+$
 
+$C = Q \cup \Gamma \cup \{\#\}$
+
+$x_{i,j,s}$ se interpreta como $T_{i,j} = s$
+
+$\varphi_{cell} = \wedge_{1 \leq i, j \leq n^k} [(\vee_{s \in C} x_{i,j,s}) \& (\wedge_{s,t \in C  \ s \neq t}(\overline{x_{i,j,s}} \vee \overline{x_{i,j,t}}))]$ $\mathcal{O}(n^{2k}) \cdot \mathcal{O}(l) \cdot \mathcal{O}(l^2)$
+
+%%%%Ver video para verificar fórmula 
+$\varphi_{start} = x_{1,1,\#} \& x_{1,2,q_0} \& ... \&$
+
+
+$\varphi_{accept} = \vee_{1 \leq i, j \leq n^k} x_{i,j,q_a}$
+
+$\delta (q_1, a) = \{(q_1, b, R)\}$
+$\delta (q_1, b) = \{(q_1, c, R), (q_1,a,R)\}$
+
+$\varphi_{start} = x_{1,1,\#} \& x_{2,2,a} \& x_{2,3,q_2} \& x_{2,4,q_2}... \&$
+
+$\underline{Afirmacion}$: Si el primer renglón es la configuración inicial y cada ventana es legal, entonces cada renglón de la tabla es una configuración que se sigue de la anterior.
+
+Dem: Si en la ventana no aparecen estados entonces, para que sea legal, el símbolo central es igual arriba y abajo. Si en la posición central superior aparece un estado, las tres posiciones de abajo corresponden a una transición correcta gracias a que la ventana es legal $\blacksquare$
+
+%%%%Ver video para obtener fórmula
+$\varphi_{move} = \vee_{1 \leq i < n^k, 1 < j < n^k} ()$
+
+Ventana: Subarreglo de 2x3, determinado por su posición central superior
+
+
+$\varphi = \varphi_{cell} \& \varphi_{start} \& \varphi_{accept} \& \varphi_{move}$
+
+$\varphi$ es satisfacible si y sólo si existe una ejecución de N que acepta a w
+
+%%%%%Ver fórmula
+$\varphi_{accept} ? \vee_{}x \mathcal{O}(n^{2k}) \cdot \mathcal{O}(l^6) =  \mathcal{O}(n^{2k}) $
+
+$|\varphi| \in \mathcal{O}(n^{2k})$
+
+Sea M una MTD que se detiene con todas sus entradas, la complejidad en espacio de M es la función $f: \mathds{N} \rightarrow \mathds{N}$ donde $f(n)$ es el máximo número de celdas que lee M en una ejecución con una entrada de tamaño n. Si la complejidad en tiempo de M es f decimos que corre en espacio $\mathcal{O}(f(n))$. Se define análogamente la complejidad en espacio para una MTN en la que todas las ramas de su ejecución se detienen con todas las entradas.
+
+$\bf{Proposicion}$: SAT se puede decidir en espacio
+
+Dem: Sea M una MT tal que 
+M = "Con entrada $<\varphi>$ donde $\varphi$ es una fórmula booleana.
+\begin{enumerate}
+	\item Por cada asignación de verdad de las variables $x_1,...,x_m$ de $\varphi$
+	\item Evalúa $\varphi$ en la asignación de verdad
+	\item Si en algún momento $\varphi$ se evalúa a 1, acepta. Si no, rechaza. "
+\end{enumerate}
+
+$\mathcal{O}(m)$ genera todas las asignaciones de verdad.
+$\mathcal{O}(m)$ es $\mathcal{O}(|\varphi|)$
+
+$ALL_{AFN} = \{<A> | \text{A es un AFN y L(A)} = \Sigma^{*}\}$
+
+$\overline{ALL_{AFN}}$
+N = "Con entrada $<A>$ donde A es un AFN:
+\begin{enumerate}
+	\item Marca el estado inicial del AFN
+	\item Repite $2^q$ veces donde q es el número de estados de A
+	\item De forma no determinista, elige un símbolo de entrada y cambia las posiciones de las marcas en los estados de A para reflejar la transición no determinista, generada por la lectura del símbolo.
+	\item \underline{Acepta} si en la etapa 3 en algún punto ninguna marca está en un estado de aceptación, i.e., si N encontró una cadena que A rechace. De otro modo $\underline{rechaza}$"
+\end{enumerate}
+
+El número de configuraciones de símbolos marcados es igual a $|2^q| = 2^q$
+
+No se sabe si está en NP o co-NP
+
+Si M corre con espacio f(n) ¿Cómo acotamos su tiempo de ejecución?
+
+M corre en tiempo $2^{\mathcal{O}(f(n))}$
+
+SPACE(foo) = $\{$L | existe una MT que corre en espacio f(n) y decide a L$\}$
+
+NSPACE(f(n)) se realiza con máquinas de turing no deterministas
+
+PSPACE = $\cup_{k \in \mathds{N}} SPACE(n^k)$
+
+NPSPACE = $\cup_{k \in \mathds{N}} NSPACE(n^k)$
+
+¿PSPACE = NPSPACE?
+
+EXPTIME = $\cup_{k \in \mathds{N}} TIME (2^{n^k})$
+
+PSPACE $\subseteq$ EXPTIME
+
+N corre en espacio f(n)
+
+$\bf{Teorema}$ (SAVITCH) Para cualquier función  $f: \mathds{N} \to \mathds{R}$, con $f(n) \geq n$,
+
+$NSPACE(f(n)) \subseteq SPACE(f^2(n))$
+
+Por tanto PSPACE = NPSPACE
+
+Alcanzabilidad: N, $c_1$, $c_2$ configuraciones y $t$ entero positivo.
+
+Q: ¿Se puede alcanzar $c_2$ desde $c_1$ en a lo más t pasos siguiendo las reglas de N?
+
+H $\to$ ALCANZA
+
+N, w
+
+¿N acepta a w?
+
+$C_{start} =$ configuración inicial
+
+$C_{accept} = q_a \sqcup$
+
+ALCANZA($C_{start}, C_{accepr}, t$)
+
+$t = 2^{\mathcal{O}(f(n))}$
+
+$log t = \mathcal{O}(f(n))$
+
+La pila no crece más de log y en cada llamada recursiva se guarda espacio f(n), de ahí que el algoritmo corre en $\mathcal{O}(f^2(n))$
+
+
+Dem: Sea N una MTN de espacio f(n)
+
+Construimos una MTD M "que simula a N". M usa la subrutina ALCANZA que toma 3 argumentos, dos configuraciones $c_1$ y $c_2$ y un entero positivo t y ALCANZA($c_1,c_2,t$) acepta si N en t pasos puede alcanzar la configuración $c_2$ partiendo de $c_1$. En otro caso rechaza. Para facilitar el análisis supongamos que t es una potencia de 2.
+
+ALCANZA= "Con entrada $c_1, c_2,t$:
+\begin{enumerate}
+	\item Si t= 1, verifica si $c_1 = c_2$ o si tras un paso en la ejecución de N, $c_1$ alcanza a $c_2$. $\underline{Acepta}$ si se cumple alguna de las dos condiciones y $\underline{rechaza}$ de otro modo
+	\item Por cada configuración $c_m$ de N que usa espacio f(n):
+	\item   Calcula ALCANZA($c_1,c_m,\frac{t}{2}$)
+	\item   Calcula ALCANZA($c_m,c_2,\frac{t}{2}$)
+	\item   Si 3 Y 4 aceptan, $\underline{acepta}$
+	\item $\underline{Rechaza}$"
+\end{enumerate}
+
+M="
 \end{document} 
