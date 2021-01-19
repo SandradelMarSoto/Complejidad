@@ -1118,7 +1118,7 @@ $x_{i,j,s}$ se interpreta como $T_{i,j} = s$
 
 $\varphi_{cell} = \wedge_{1 \leq i, j \leq n^k} [(\vee_{s \in C} x_{i,j,s}) \& (\wedge_{s,t \in C  \ s \neq t}(\overline{x_{i,j,s}} \vee \overline{x_{i,j,t}}))]$ $\mathcal{O}(n^{2k}) \cdot \mathcal{O}(l) \cdot \mathcal{O}(l^2)$
 
-%%%%Ver video para verificar fórmula 
+%%%%Ver video para verificar fórmula (Bonita en el Sipser)
 $\varphi_{start} = x_{1,1,\#} \& x_{1,2,q_0} \& ... \&$
 
 
@@ -1133,7 +1133,7 @@ $\underline{Afirmacion}$: Si el primer renglón es la configuración inicial y c
 
 Dem: Si en la ventana no aparecen estados entonces, para que sea legal, el símbolo central es igual arriba y abajo. Si en la posición central superior aparece un estado, las tres posiciones de abajo corresponden a una transición correcta gracias a que la ventana es legal $\blacksquare$
 
-%%%%Ver video para obtener fórmula
+%%%%Ver video para obtener fórmula (Bonita en el Sipser)
 $\varphi_{move} = \vee_{1 \leq i < n^k, 1 < j < n^k} ()$
 
 Ventana: Subarreglo de 2x3, determinado por su posición central superior
@@ -1143,14 +1143,16 @@ $\varphi = \varphi_{cell} \& \varphi_{start} \& \varphi_{accept} \& \varphi_{mov
 
 $\varphi$ es satisfacible si y sólo si existe una ejecución de N que acepta a w
 
-%%%%%Ver fórmula
-$\varphi_{accept} ? \vee_{}x \mathcal{O}(n^{2k}) \cdot \mathcal{O}(l^6) =  \mathcal{O}(n^{2k}) $
+%%%%%Ver fórmula (Bonita en el Sipser)
+$\varphi_{accept} = \vee_{}x \mathcal{O}(n^{2k}) \cdot \mathcal{O}(l^6) =  \mathcal{O}(n^{2k}) $
 
 $|\varphi| \in \mathcal{O}(n^{2k})$
 
+\subsection{Espacio}
+
 Sea M una MTD que se detiene con todas sus entradas, la complejidad en espacio de M es la función $f: \mathds{N} \rightarrow \mathds{N}$ donde $f(n)$ es el máximo número de celdas que lee M en una ejecución con una entrada de tamaño n. Si la complejidad en tiempo de M es f decimos que corre en espacio $\mathcal{O}(f(n))$. Se define análogamente la complejidad en espacio para una MTN en la que todas las ramas de su ejecución se detienen con todas las entradas.
 
-$\bf{Proposicion}$: SAT se puede decidir en espacio
+$\bf{Proposicion}$: SAT se puede decidir en espacio polinomial
 
 Dem: Sea M una MT tal que 
 M = "Con entrada $<\varphi>$ donde $\varphi$ es una fórmula booleana.
@@ -1241,5 +1243,127 @@ ALCANZA= "Con entrada $c_1, c_2,t$:
 	\item $\underline{Rechaza}$"
 \end{enumerate}
 
-M="
+Necesitamos modificar N para que tenga una única configuración de aceptación: al aceptar, borra su cinta y regresa el cabezal a la posición más a la izquierda y se mueve a un nuevo estado de aceptación, esta configuración es $C_0$.
+
+Elegimos un entero d tal que N no tenga más de $2^{f(n)}$ es una cota superior por el tiempo de ejecución de cualquier número con cualquier entrada.
+
+Entonces, basta con proponer a M
+M="Con entrada w:
+\begin{enumerate}
+	\item Responde $ALCANZA(C_3, C_0, 2^{f(n)})$
+\end{enumerate}
+
+Como ALCANZA resuelve alcanzabilidad, M "simula" a N.
+
+Al llamarse recursivamente, ALCANZA guarda los valores de $C_1$, $C_2$ y t en la pila, para poder restaurarlos al volver de la llamada. Cada nivel de la recursión usa $\mathcal{O}(f(n))$ espacio adicional. Además, cada nivel divide t por 2, es inicialmente  $2^{d f(n)}$, por lo que la profundidad de la recursión es $\mathcal{O}(log2^{d f(n)}) = \mathcal{O}(f(n))$. Por tanto el espacio total que se utiliza es $\mathcal{O}(f^{2}(n))$
+
+¿Cómo obtenemos f(n)?
+
+Probamos $f(n) = 1, f(n)=2, f(n)=3$, .., 
+
+¿Cuándo nos detenemos?
+
+Si $f(n)=i$, ¿podemos alargar alguna configuración de longitud i+1 ?
+
+En cada nivel se guarda $\mathcal{O}(f(n))$
+
+$P \subseteq PSPACE$, $PSPACE \subseteq EXPTIME$
+
+$NP \subseteq NPSPACE$ $P \subseteq NP \subseteq PSPACE = NPSPACE \subseteq EXPTIME$
+
+$\bf{Corolario:}$ PSPACE = NPSACE
+
+Dem: El cuadrado de un polinomio es un polinomio $\blacksquare$
+
+$P \subseteq NP \subseteq PSPACE = NSPACE \subseteq EXPTIME$
+
+$\bf{Def}$ Un lenguaje B es PSPACE-completo si 
+\begin{itemize}
+	\item B $\in$ PSPACE
+	\item Para cada A en PSPACE $A \leq_P B$ (A se puede reducir en tiempo polinomial a B)
+\end{itemize}
+
+Forma Normal Prenex (todos sus cuantificadores estén al inicio)
+
+Fórmulas Booleanas Totalmente Cuantificadas en FNP
+
+TQFB =  $\{<\varphi> | \varphi \text{ es una fórmula booleana totalmente cuantificada verdadera} \}$
+
+$\bf{Teo}$ TQFB es PSPACE-completo
+
+
+Sea $\varphi = \forall x_1, \exists x_2, \forall x_3, ... Qx_k [x]$ $Q \in \{\exists, \forall\}$
+
+$\varphi_1 = \exists x_1, \forall x_2, \exists x_3 ((x_i \vee x_2) \wedge (x_2 \vee  x_3) \wedge (\overline{x_2} \vee \overline{x_3}) )$
+
+$\varphi_2 = \exists x_1, \forall x_2, \exists x_3 ((x_i \vee x_2) \wedge (x_2 \vee  x_3) \wedge (x_2 \vee \overline{x_3}) )$
+
+FORMULA-GAME = $\{<\varphi>| \text{ El jugador E tiene una estrategia ganadora para el juego asociado a } \varphi\}$
+
+$\bf{Teo}$ FORMULA-GAME es PSPACE-complete
+
+TBQF = $\{<\varphi>| \varphi \text{ es una fórmula boolena totalmente cuantificada en FNP, verdadera }\}$
+
+Dem: Demostraremos que FORMULA-GAME = TQBF
+
+Si $\varphi$ es verdadera, entonces por cada elección que haga A, existe una elección para E que hace a $\varphi$ verdadera. Luego, E tiene una estrategia ganadora. Recíprocamente si E tiene una estrategia ganadora, entonces existe una asignación para las variables cuantificadas existencialmente par cualquier elección de las variables cuantificados universalmente que hacen a $\varphi$ verdadera. Luego FORMULA-GAME $\subseteq$ TQBF $\blacksquare$
+
+Geografía-Generalizado: Se juega sobre una digrpafica D y empezando en un vértice distinguido b. Los jugadores 1 y 2 alternan turnos eligiendo un vértices en la exvecindad del vértice actual. No se pueden repetir vértices y el primer jugador que no puede elegir un vértice pierde.
+
+GG = $\{<D,b> | \text{ El jugador I tiene una estrategia ganadora en GG sobre D empezando en b}\}$
+
+$\bf{Teo}$ GG es PSPACE-completo
+
+M = "Con entrada <D,d> con D una digráfica y b un vértice de D:
+\begin{enumerate}
+	\item Si b tiene exgrado cero $\underline{rechaza}$ (I no tiene movimientos)
+	\item Borra b y todas las flechas incidentes en b para obtener $G_1$
+	\item Para cada $v \in V^{+}(b)$ (exvecindad de b), llama recursivamente a M con entrada $<G_1, v>$ 
+	\item SI todas las llamadas en 3 aceptan, entonces $\underline{rechaza}$ (II tiene una estrategia ganadora). Si no, II no tiene estrategia ganadora, por lo que I si la tiene, $\underline{acepta}$ "
+\end{enumerate}
+
+Notamos que GG es decidido por M. Además, M sólo necesita guardar un vértice en la pila de recursión en casa llamada. Se sigue que M corre en espacio lineal, por tanto, GG $\in$ SPACE
+
+$\varphi = \exists x_1\forall x_2 \exists x_3 ((x_1 \vee x_2) \wedge (x_2 \vee \overline{x_3}) \wedge (\overline{x_2} \vee \overline{x_3}))$
+
+Para cada variable $x_i$, en el orden en el que aparecen cuantificadas en $\varphi$, creamos un "rombo".
+
+Para dos variables consecutivas unimos a sus "rombos" con una flecha del vértice inferior del primero al superior del segundo, por ejemplo si en $\varphi$ aparecen $\forall x: \exists x_{i+1} $ unimos el rombo de $x_i$ con el de $x_{i+1}$.
+
+Para la i-ésima clausula $(x_1 \vee x_e \vee ... \vee x_k )$ creamos la siguiente estructura: Un vértice por cada literal y un vértice adicional que los domina a todos.
+
+Para cada vértice correspondiente a una literal en los gadgets anteriores agregamos una flecha hacia la copia de la literal correspondiente en los "rombos" construidos anteriormente. El vértice b es el vértice superior del primer "rombo" y creamos un nuevo vértices c que tiene flecha hacia el vértice dominante en el gadget de cada clausula y recibe flecha desde el vértice inferior del último "rombo".
+
+$\bf{Obs}$. Una vez que I tira en el vértice superior de un "rombo", los siguientes dos movimientos están forzados y la siguiente decisión la toma II en el vértice superior del siguiente rombo. Esto alternará hasta que se acaben los "rombos".
+Podemos suponer que I empieza y termina, y que las decisiones antes descritas son alternadas, quizá agregando cuantificadores a $\varphi$ con fórmulas que no ocurran en $\varPsi$.
+
+Como I toma la decisión sobre el último "rombo", tras dos tiros forzados, II elige sobre que clausula tirar. Sin importar cual elija, si E tiene una estrategia ganadora, podemos garantizar que todas las clausulas son verdaderas, por lo que I puede elegir la literal verdadera en su siguiente tiro y como esa literal se usó en el "rombo" correspondiente II no tiene movimientos.
+
+Si I tiene una estrategia ganadora, entonces por la observación anterior, sin importar que clausula elija II al final del juego, I siempre puede elegir una literal en esa clausula por la que se paso previamente en el camino generado por el juego. Por tanto, para cada decisión de I hacia la izquierda, E elige I como el valor para la variable correspondiente y por cada decisión de I hacia la derecha E elige 0 como el valor de la variable correspondiente. Esto garantiza que cada clausula tiene al menos una literal verdadera. $\blacksquare$ 
+
+
+\subsection{Espacio sublineal}
+
+Hasta el momento la cantidad de espacio usado $f(n)$ cumplía que $f(n) > n$. Para cada espacio subliminal necesitamos modificar un modelo. Vamos a correr una MT con dos cintas una de sólo-lectura (entrada) y una de lectura-escritura (trabajo). En la cinta de trabajo solo se puede ocupar $\mathcal{O}(logn)$ espacio. El cabezal de la cinta de entrada no puede salir del espacio que ocupa la entrada, por lo que esta MT debe tener algún mecanismo para saber cuando el cabezal de la primera cinta está en la posición más a la izquierda o al final de la entrada.
+
+L = SPACE(logn)
+
+Los lenguajes que pueden ser decididos por una MTD en espacio logarítmico.
+
+NL = NSPACE(logn)
+
+Los transductores son máquinas que tienen una cinta de solo salida y que su fin ultimo es generar una salida a diferencia de las MT cuyo fin es reconocer un lenguaje (aceptar o rechazar)
+
+$\bf{Def}$ Transductor de Espacio Logarítmico.
+Es una MT con tres cintas, una será de sólo-lectura (entrada) con la misma restricción de que e cabezal no puede moverse del inicio de la entrada.
+Va a tener una cinta de lectura-escritura (trabajo) que tendrá espacio logarítmico.
+Y va a tener una cinta de sólo-escritura (salida)
+
+Computa $f:\Sigma^* \to \Sigma^*$ con salida $f(w)$ y siempre que empiece con w en su cinta de entrada, la ejecución sólo usa espacio O(logn) en la cinta de trabajo y termina su ejecución con $f(w)$ en la cinta de salida. Si A y B son lenguajes decimos que A es reducible en espacio logarítmico a B. $A \leq_{L} B$ si hay una función computable $f$, calculada por un transductor de espacio logarítmico tal que $w \in A$ si y sólo si $f(w) \in AS$
+
+Un lenguaje A es NL-completo si
+ \begin{itemize}
+ 	\item $A \in NL$
+ 	\item Para cada B$ \in$ NL, B$\leq_L$ A
+ \end{itemize}
 \end{document} 
