@@ -1287,11 +1287,42 @@ Forma Normal Prenex (todos sus cuantificadores estén al inicio)
 
 Fórmulas Booleanas Totalmente Cuantificadas en FNP
 
-TQFB =  $\{<\varphi> | \varphi \text{ es una fórmula booleana totalmente cuantificada verdadera} \}$
+TQBF =  $\{<\varphi> | \varphi \text{ es una fórmula booleana totalmente cuantificada verdadera} \}$
 
-$\bf{Teo}$ TQFB es PSPACE-completo
+$\bf{Teo}$ TQBF es PSPACE-completo
 
+Dem:
+Proponemos a T una MT tal que 
 
+T: "Con entrada $<\varphi>$, donde $\varphi$ es una f.b.t.c:
+\begin{enumerate}
+	\item Si $\varphi$ no tiene cuantificadores, entonces solo tienes constantes. Evalúa $\varPhi$ y $\underline{acepta}$ si es verdadera y $\underline{rechaza}$ si no.
+	\item Si $\varphi = \exists x \varPsi$ llamamos a T con $\varPsi$ primero sustituyendo cada ocurrencia de x en $\varPsi$ por 0 y después por 1. Si alguno de las dos acepta, $\underline{acepta}$.
+	\item Si $\varphi = \forall x \varPsi$, llama a T con $\varPsi$ primero sustituyendo cada ocurrencia de x en $\psi$ por 0 y después por 1. Si las dos aceptan,$\underline{acepta}$, si no $\underline{rechaza}$.
+\end{enumerate}
+
+El número de llamadas recursivas es $\mathcal{O}(n)$ donde n es el número de cuantificadores en $\varphi$, y en cada llamada sólo necesitamos usar una cantidad constante de espacio. Por lo tanto T corre en espacio lineal respecto a la longitud de $\varphi$.
+
+Luego TQBF $\in$ PSPACE
+
+Sea A $\in$ TQBF, sea M una MT de espacio polinomial que decide a A. Para cada entrada de A, vamos a construit una f.b.t.c. $\varphi$ tal que $\varphi$ sea verdadera si y sólo si M acepta a w.
+
+Sean $c_1$ y $c_2$ conjuntos de variables que representan configuraciones, es decir, por ejemplo $c_1 = \{x_1 ,..., x_l\}$ donde $l = f(n)$ cada $x_i$ es el contenido de una celda en la configuración de la MT M. Dado un entero t construimos $\varphi_{c_1,c_2,t}$ una fórmula que es verdadera si y sólo si la configuración $c_1$ alcanza a $c_2$ en t pasos o números.
+
+Si $c_0$ es la configuración inicial y $c_d$ es la configuración de aceptación, entonces $\varphi_{c_0,c_d,h}$ es verdadera si y sólo si M acepta a $c_d$ donde $h = 2^{df(n)}$ donde d es una constante suficientemente grande tal que M no corre por más de h pasos. Cuando t=1 $\varphi_{c_0,c_d,h}$ $\varphi$ considera que o bien $c_1 = c_2$, o $c_1$ alarga a $c_2$ en una transición- En el segundo , utilizamos la fórmula del Teorema de Cook para las ventanas suponiendo que $c_1$ y $c_2$ son configuraciones adyacentes.
+
+Si $t > 1$ $\varphi:{c_1,c_2,t} = \exists m_1 [\varphi_{c_1,m_1,\frac{t}{2}} \& \varphi_{m_1,c_2,\frac{t}{2}}]$
+
+En su lugar proponemos
+
+$\varphi:{c_1,c_2,t} = \exists m_1 \forall (c_3,c_4) \in \{(c_1,m_1), (m_1,c_2)\} \varphi_{c_3,c_4,t}$ Gracias al cuantificador universal tenemos los valores
+
+$\varphi_{c_1,m_1,\frac{1}{2}}$ y $\varphi_{m_1,c_2,\frac{1}{2}}$
+
+El tamaño de $\varphi_{c_1,c_2,h}$ con $h = 2^{d(f(n))}$. Por cada llamada recursiva se usa espacio lineal y la profundidad log $2^df(n) \in \mathcal{O}(f(n))$
+
+La longitud de $\varphi_{c_1,c_2,h}$ es $\mathcal{O}(f^2(n))$ Como $f(n) = n^t$ para algún entero k entonces $\mathcal{O}(f^2(n)) = \mathcal{O}(n^{2t})$ que es polinomial.
+ 
 Sea $\varphi = \forall x_1, \exists x_2, \forall x_3, ... Qx_k [x]$ $Q \in \{\exists, \forall\}$
 
 $\varphi_1 = \exists x_1, \forall x_2, \exists x_3 ((x_i \vee x_2) \wedge (x_2 \vee  x_3) \wedge (\overline{x_2} \vee \overline{x_3}) )$
@@ -1366,4 +1397,106 @@ Un lenguaje A es NL-completo si
  	\item $A \in NL$
  	\item Para cada B$ \in$ NL, B$\leq_L$ A
  \end{itemize}
+
+Tenemos al lenguaje $\{0^k 1^k | k \in \mathds{N}\} = A$ $A \in L$
+
+Veamos que tendrá espacio logarítmico:
+
+M = " Con entrada w
+\begin{enumerate}
+\item Revisa que w sea de la forma 0*1*. De no ser así, $\underline{rechaza}$. $\mathcal{O}(1)$
+\item Cuenta los 0 en w y escribe cuántos hay en un contador en la cinta de trabajo. $\mathcal{O}(log n)$
+\item Cuenta los 1 en w y escribe cuántos hay en la cinta de trabajo. $\mathcal{O}(log n)$
+\item Si los contadores son iguales, $\underline{acepta}$. Si no, $\underline{rechaza}$. $\mathcal{O}(1)$
+\end{enumerate}
+
+Una MT que corre en espacio $f(n)$ usa tiempo a lo más $2^{O(f(n))}$  $f(n) \geq n$
+
+Dada una MT de es espacio logarítmico M y una entrada w, una configuración de M sobre w es una elección de un estado contenido de la cinta de trabajo y posiciones de los dos cabezales
+
+Si M corre en espacio $f(n)$ y w es una cadena de longitud de n, entonces M tiene el siguiente número de configuraciones sobre w:
+
+$|Q|= q$ (estados) $|p^k|= g$ (cardinalidad de los símbolos en el alfabeto )
+
+$nqg^{f(n)}f(n) = n2^{\mathcal{O}(f(n))}$
+
+$f(n)\geq log$
+$2^{\mathcal{O}(f(n))}$  $2^{\mathcal{O}(log n)}$
+$2^{klogn} = 2^{logn^k} = n^k =$ polinomial
+
+$n2^{\mathcal{O}(f(n))}$ podemos elegir una constante suficientemente grande tal que $n2^{\mathcal{O}(f(n))}$ sea $2^{\mathcal{O}(f(n))}$
+
+$g^{(f(n))} \leq 2^k$
+
+Si M corre en espacio logarítmico entonces corre en tiempo polinomial.
+
+En la demostración del teorema de Savich $log(n2^{\mathcal{O}(f(n))}) = log(n) + log2^{\mathcal{O}(f(n))}$
+$= logn + \mathcal{O}(f(n)) = \mathcal{O}(f(n))$.
+
+y en cada llamada recursiva sólo necesitamos espacio $\mathcal{O}(f(n))$ para guardar la configuración de M en la pila.
+
+¿NL?
+
+$PATH = \{<D,s,f>| D \text{ es una digráfica con una st-trayectoria}\}$
+
+Eliges un camino de forma no determinista
+
+M = "Con entrada $<D,s,t>$ con D una digráfica, $s,t \in V$:
+\begin{enumerate}
+	\item Inicializa un contador $c$ en la cantidad de vértices de la digráfica y una variable x en S, en la cinta de trabajo.
+	\item Mientras $c > 0$:
+	\item   Si $x = t $, $\underline{acepta}$.
+	\item   Elige un vértice v de forma no determinista en la exvecindad de x y reemplaza x por v.
+	\item   Decrementa $c$ en una unidad.
+	\item $\underline{Rechaza}$ "
+\end{enumerate}
+
+Espacio: $2logn = \mathcal{O}(logn)$
+
+$\bf{Teo}$ PATH es NL-completo
+
+Dem: Sea $A \in NL$ y supongamos que N es una MTN que decide a $A$. Sea w una cadena. Construyamos una digráfica D tal que cada vértice de D es una configuración de N sobre w, y donde $(c_i,c_j) \in A_D$ si y sólo si hay una transición $w N$ de $c_i$ o $c_j$. Para generar la lista de vértices de D vamos a generar todas las cadenas de longitud a lo más grande de N y vamos a verificar si cada una es o no una configuración válida de N. Si no lo es, continuamos, si sí, la copiamos a la cinta de salida. 
+
+Las flechas se generan análogamente pero probando parejas de configuraciones de N.
+
+El vértice s es la configuración inicial $c_s$ y para t podemos modificar a N como en el teorema de Savitch para que haya una única configuración de aceptación $c_a$.Entonces t es $c_a$. Ya tenemos $<D,s,t>$. Si N acepta a w, entonces alguna rama de N termina un $c_a$. Los nodos de dicha rama conforman una st-trayectoria en D. Recíprocamente, si hay una st-trayectoria en D, entonces hay una sucesión de transiciones de N que empezando en $c_s$ terminan en $c_a$. Luego, alguna rama del árbol de ejecución de N termina en la configuración de aceptación y por lo tanto N acepta a w.
+
+Como en la cinta de trabajo hay a lo más dos configuraciones de N, el espacio utilizado es $\mathcal{O}(logn) \blacksquare$.
+
+$\bf{Teo}$ Si A y B son lenguajes tales que $A \leq_L B$ y $B \in L$ entonces $A \in L$
+
+M = "Con entrada w
+\begin{enumerate}
+	\item Calcula f(w)
+	\item Corre $M_B (f(w))$ y responde lo mismo" 
+\end{enumerate}
+
+Dem: Sea $M_A$ el transductor que calcula f(w) con espacio logarítmico y $M_B$ la MT de espacio logarítmico que decide a B, creamos una MT M de espacio logarítmico que haga lo siguiente:
+$Simule a M_B$, cada que necesite al siguiente símbolo para continuar su ejecución va a escribir en un contador la posición de la entrada que necesita. En ese punto M guarda el contenido de la cinta de trabajo de $M_B$ y ejecuta a $M_A$ hasta generar la entrada necesaria de f(w). Cada vez que haga esto, borra el trabajo anterior y reinicia la ejecución de $M_A$ desde cero. Para simular a $M_B$ se usa espacio $\mathcal{O}(logn)$ al igual que para simular a $M_A$. Además necesitamos a una celda para guardar el símbolo que está guardando $M_B$ y espacio log. para cada contador. En total, el espacio utilizado es $\mathcal{O}(logn)$
+
+$\bf{Corolario}$ Si un lenguaje NL-Completo está en L, entonces L = NL
+
+$bf{Teo}$ NL = coNL
+
+Dem: PATH es NL-completo $\overline{PATH} \in NL$
+
+%Pseudocódigo completo está en el Sipser%
+
+C= Número de vértices que se alcanzan desde s
+
+Por cada vértice v de D, adivina si v es alcanzado o no por s, y en caso positivo lo verifica. Si la verificación falla rechaza. Si no, aumenta un contador que cuenta cuantos vértices se alcanzan desde s en 1. Cuando ya recorrió todos los vértices compara el contador contra c. Si son distintos, rechaza. Si en algún momento se verifica que s alcanza a t, $\underline{rechaza}$. Si son iguales, entonces M encontró a todos los vértices que se alcanzan desde s y t no es uno de ellos, entonces $\underline{acepta}$.
+
+Necesita una variable para hace la verificación, una para verifica y el contador en espacio log, por lo tanto toma espacio $\mathcal{O}(logn)$
+
+$A_i = \{\text{vértices en D que se alcanzan desde s en una distancia igual a i}\}$ $A_0 = \{s\}$ $c_0 = 1$ 
+
+$A_{i+1}$ usando $A_i$ y $c_i = \{A_i\}$
+
+Verificamos que para cada $v \in V$, si $v \in A_{i+1}$
+
+Para cada vértice v de V adivina si está o no en $A_i$. i sí, lo verifica, aumentando un contador, y busca si (u,v) está en las flechas de D, y aumentamos un contador que cuenta los vértices de $A_{i+1}$ (queremos encontrar i+1). Si $(u,v) \notin A_d$, continua verificando a los demás vértices. Cuando todos los vértices han sido verificados comparamos a d con $c_i$, si son iguales, v no está en $A_{i+1}$
+
+
+
+
 \end{document} 
